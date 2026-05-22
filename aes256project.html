@@ -1,0 +1,2856 @@
+﻿<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AES-256 — Интерактивный тренажёр</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+/* ════ CSS VARIABLES ════ */
+:root {
+  --font-scale: 1;
+  --bg:       #10163a;
+  --bg2:      #17205a;
+  --bg3:      #fff8e8;
+  --bg4:      #e9f9ff;
+  --bg5:      #dff3ff;
+  --ac:       #00a8ff;
+  --ac2:      #0078ff;
+  --pu:       #8b5cf6;
+  --pu2:      #6d28d9;
+  --gr:       #22c55e;
+  --gr2:      #15803d;
+  --rd:       #ff4d6d;
+  --or:       #ff8a00;
+  --ye:       #ffd43b;
+  --pi:       #ff4fb8;
+  --tx:       #f0f4ff;
+  --tx2:      #dbeafe;
+  --tx3:      #64748b;
+  --bd:       rgba(0,168,255,.32);
+  --bd2:      rgba(15,23,42,.12);
+  --shadow:   0 10px 0 rgba(15,23,42,.16), 0 18px 34px rgba(15,23,42,.25);
+  --card-bg:  rgba(255,248,232,.96);
+  --glow-ac:  0 0 0 4px rgba(0,168,255,.12), 0 0 28px rgba(0,168,255,.38);
+  --glow-pu:  0 0 0 4px rgba(139,92,246,.14), 0 0 28px rgba(139,92,246,.35);
+  --glow-gr:  0 0 0 4px rgba(34,197,94,.14), 0 0 28px rgba(34,197,94,.35);
+  --radius:   18px;
+}
+[data-theme="light"] {
+  --bg:       #f0f4ff;
+  --bg2:      #e4eaff;
+  --bg3:      #ffffff;
+  --bg4:      #f5f7ff;
+  --bg5:      #edf0fa;
+  --ac:       #0284c7;
+  --ac2:      #0369a1;
+  --pu:       #7c3aed;
+  --pu2:      #5b21b6;
+  --gr:       #16a34a;
+  --gr2:      #15803d;
+  --rd:       #dc2626;
+  --or:       #ea580c;
+  --ye:       #d97706;
+  --pi:       #db2777;
+  --tx:       #1e293b;
+  --tx2:      #475569;
+  --tx3:      #94a3b8;
+  --bd:       rgba(2,132,199,.2);
+  --bd2:      rgba(0,0,0,.1);
+  --shadow:   0 4px 20px rgba(0,0,0,.12);
+  --card-bg:  rgba(255,255,255,.92);
+  --glow-ac:  0 0 20px rgba(2,132,199,.15);
+  --glow-pu:  0 0 20px rgba(124,58,237,.15);
+  --glow-gr:  0 0 20px rgba(22,163,74,.15);
+}
+
+/* ════ ACCESSIBILITY HIGH CONTRAST ════ */
+body.high-contrast {
+  --bg:       #000000;
+  --bg2:      #0a0a0a;
+  --bg3:      #111111;
+  --bg4:      #1a1a1a;
+  --bg5:      #222222;
+  --ac:       #00ffff;
+  --ac2:      #00cccc;
+  --pu:       #ff88ff;
+  --pu2:      #dd00dd;
+  --gr:       #00ff88;
+  --gr2:      #00cc66;
+  --rd:       #ff4444;
+  --or:       #ffaa00;
+  --ye:       #ffff00;
+  --pi:       #ff66aa;
+  --tx:       #ffffff;
+  --tx2:      #dddddd;
+  --tx3:      #aaaaaa;
+  --bd:       rgba(0,255,255,.4);
+  --bd2:      rgba(255,255,255,.25);
+  --shadow:   0 0 0 2px rgba(0,255,255,.5);
+  --card-bg:  #111111;
+}
+body.high-contrast .mc, body.high-contrast .rkc { border-width: 2px !important; }
+body.high-contrast .fc-item { border-width: 2px !important; }
+body.high-contrast .diag-node { border-width: 3px !important; }
+body.high-contrast * { font-weight: 600 !important; }
+body.high-contrast .theory-desc, body.high-contrast .explain-step { color: var(--tx) !important; font-size: 1em !important; }
+body.high-contrast header,
+body.high-contrast .left-panel,
+body.high-contrast .right-panel,
+body.high-contrast .theory-box,
+body.high-contrast .ctrl-card,
+body.high-contrast .step-explain,
+body.high-contrast .info-bar,
+body.high-contrast .shift-visual,
+body.high-contrast .step-arrows-visual,
+body.high-contrast .sbox-grid,
+body.high-contrast .sbox-header,
+body.high-contrast .speech-bubble,
+body.high-contrast .col-anim-wrap {
+  background:#000 !important;
+  border-color:#fff700 !important;
+  color:#fff !important;
+  box-shadow:0 0 0 3px #fff700 !important;
+}
+body.high-contrast input,
+body.high-contrast button,
+body.high-contrast .h-btn,
+body.high-contrast .action-btn,
+body.high-contrast .nav-btn,
+body.high-contrast .speed-btn,
+body.high-contrast .a11y-size button {
+  background:#000 !important;
+  color:#fff !important;
+  border:3px solid #fff700 !important;
+}
+body.high-contrast .mc,
+body.high-contrast .rkc,
+body.high-contrast .src,
+body.high-contrast .arrow-cell-before,
+body.high-contrast .arrow-cell-after,
+body.high-contrast .subbyte-step-card {
+  background:#000 !important;
+  color:#00ffff !important;
+  border-color:#fff700 !important;
+  box-shadow:none !important;
+}
+
+/* ════ LARGE TEXT ════ */
+body.large-text { font-size: 17px !important; --font-scale:1.18; }
+body.large-text .theory-op { font-size: 1.1rem !important; }
+body.large-text .theory-desc { font-size: 0.95rem !important; }
+body.large-text .mc, body.large-text .rkc { font-size: 1rem !important; width: 58px !important; height: 48px !important; }
+body.large-text .step-op-name { font-size: 1.3rem !important; }
+body.large-text .explain-step { font-size: 0.9rem !important; }
+body.large-text .ctrl-lbl { font-size: 0.68rem !important; }
+body.large-text .a11y-row label { font-size: 0.85rem !important; }
+body.large-text .fc-name { font-size: 0.8rem !important; }
+body.large-text .fc-sub { font-size: 0.7rem !important; }
+body.large-text .nav-btn { font-size: 0.8rem !important; padding: 0.5rem 1rem !important; }
+body.large-text .h-logo { font-size: 1.2rem !important; }
+html{font-size:calc(15px * var(--font-scale)) !important}
+body{font-size:calc(15px * var(--font-scale)) !important}
+body.a11y-xl{--font-scale:1.35}
+body.a11y-xxl{--font-scale:1.58}
+
+/* ════ RESET ════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;font-size:14px;}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--ac)}
+
+/* ════ ANIMATED BACKGROUND ════ */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45}
+[data-theme="light"] #bgCanvas{opacity:.75}
+
+/* ════ LAYOUT ════ */
+.app-shell{position:relative;z-index:1;display:grid;grid-template-rows:58px 1fr;height:100vh;overflow:hidden}
+.main-grid{display:grid;grid-template-columns:310px 1fr 285px;height:100%;overflow:hidden}
+
+/* ════ HEADER ════ */
+header{
+  height:58px;
+  background:linear-gradient(90deg,var(--bg2),var(--bg3));
+  border-bottom:2px solid var(--bd);
+  display:flex;align-items:center;gap:.65rem;padding:0 1.2rem;
+  position:relative;z-index:200;
+  backdrop-filter:blur(20px);
+  box-shadow:0 2px 20px rgba(0,0,0,.4);
+}
+.h-logo{
+  font-family:'Fredoka One',cursive;font-size:1.3rem;
+  color:var(--ac);letter-spacing:-.01em;white-space:nowrap;display:flex;align-items:center;gap:.4rem
+}
+.h-logo-emoji{font-size:1.4rem;animation:logoBounce 2.5s ease-in-out infinite}
+@keyframes logoBounce{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(-5deg)}}
+.h-badge{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:500;
+  color:var(--pu);border:1.5px solid rgba(192,132,252,.4);padding:.2rem .65rem;
+  letter-spacing:.05em;white-space:nowrap;border-radius:20px;background:rgba(192,132,252,.08)
+}
+.h-key-row{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;overflow:hidden}
+.h-key-lbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--tx3);white-space:nowrap}
+.h-key-val{
+  font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--pu);
+  background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);
+  padding:.14rem .45rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:20px
+}
+.h-btn{
+  padding:.3rem .75rem;background:transparent;border:1.5px solid var(--bd2);
+  color:var(--tx2);font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;
+  transition:all .2s;white-space:nowrap;border-radius:20px
+}
+.h-btn:hover{border-color:var(--ac);color:var(--ac);background:rgba(56,232,255,.06);transform:translateY(-1px)}
+.h-status{
+  font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:800;
+  padding:.22rem .8rem;border:1.5px solid;border-radius:20px;white-space:nowrap;transition:all .3s
+}
+.h-status.idle{color:var(--tx3);border-color:var(--bd2);background:transparent}
+.h-status.enc{color:var(--ac);border-color:rgba(56,232,255,.4);background:rgba(56,232,255,.08)}
+.h-status.dec{color:var(--pu);border-color:rgba(192,132,252,.4);background:rgba(192,132,252,.08)}
+.h-status.done{color:var(--gr);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
+
+/* ════ ACCESSIBILITY PANEL ════ */
+.a11y-btn{
+  width:38px;height:38px;border-radius:50%;background:rgba(192,132,252,.12);
+  border:1.5px solid rgba(192,132,252,.35);color:var(--pu);cursor:pointer;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;position:relative
+}
+.a11y-btn:hover{background:rgba(192,132,252,.22);box-shadow:var(--glow-pu);transform:scale(1.1)}
+.a11y-panel{
+  position:absolute;top:calc(100% + 10px);right:0;
+  border:2px solid var(--bd);border-radius:var(--radius);
+  padding:1rem;width:240px;z-index:500;
+  box-shadow:var(--shadow);display:none;flex-direction:column;gap:.65rem;
+  /* Dark theme defaults */
+  --a11y-bg:    #1a2744;
+  --a11y-btn:   rgba(255,255,255,.09);
+  --a11y-bdr:   rgba(148,163,184,.35);
+  --a11y-tx:    #e2e8f0;
+  --a11y-title: #7dd3fc;
+  background: var(--a11y-bg);
+}
+[data-theme="light"] .a11y-panel{
+  --a11y-bg:    #ffffff;
+  --a11y-btn:   #f0f4ff;
+  --a11y-bdr:   rgba(0,0,0,.15);
+  --a11y-tx:    #1e293b;
+  --a11y-title: #0284c7;
+  background: var(--a11y-bg);
+  border-color: rgba(0,0,0,.12);
+}
+.a11y-panel.open{display:flex}
+.a11y-panel-title{font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--a11y-title);margin-bottom:.3rem}
+.a11y-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.a11y-row label{font-size:.78rem;font-weight:700;color:var(--a11y-tx)}
+.a11y-toggle{
+  width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.12);border:1.5px solid var(--a11y-bdr);
+  cursor:pointer;position:relative;transition:background .2s;flex-shrink:0
+}
+[data-theme="light"] .a11y-toggle{background:rgba(0,0,0,.08)}
+.a11y-toggle.on{background:var(--ac2);border-color:var(--ac)}
+.a11y-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+.a11y-toggle.on::after{left:23px}
+.a11y-size{display:flex;gap:.3rem;flex-wrap:wrap}
+.a11y-size button{
+  padding:.22rem .55rem;border:1.5px solid var(--a11y-bdr);border-radius:8px;background:var(--a11y-btn);
+  color:var(--a11y-tx);cursor:pointer;font-size:.7rem;font-weight:700;transition:all .2s
+}
+.a11y-size button:hover,.a11y-size button.active{border-color:var(--ac);color:var(--ac);background:rgba(99,102,241,.18)}
+.a11y-sep{height:1px;background:var(--a11y-bdr)}
+
+/* ════ LEFT PANEL ════ */
+.left-panel{
+  background:var(--bg2);border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.theory-box{
+  flex-shrink:0;background:linear-gradient(135deg,var(--bg3),var(--bg4));border-bottom:1px solid var(--bd);
+  padding:.9rem 1rem;
+}
+.theory-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--ac);
+  letter-spacing:.18em;margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem;font-weight:700
+}
+.theory-tag::before{content:'';width:18px;height:2px;background:var(--ac);border-radius:2px}
+.theory-op{
+  font-family:'Fredoka One',cursive;font-size:.95rem;
+  color:var(--tx);margin-bottom:.3rem;line-height:1.3
+}
+.theory-desc{font-size:.78rem;font-weight:600;color:var(--tx2);line-height:1.65;margin-bottom:.45rem}
+.theory-formula{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--gr);
+  background:rgba(74,222,128,.07);border:1.5px solid rgba(74,222,128,.2);
+  padding:.35rem .6rem;word-break:break-all;line-height:1.55;border-radius:8px
+}
+
+/* Controls scroll area */
+.controls{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.65rem}
+.ctrl-card{
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:var(--radius);padding:.75rem .85rem
+}
+.ctrl-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;color:var(--tx3);
+  letter-spacing:.14em;display:block;margin-bottom:.45rem
+}
+.txt-in{
+  width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;
+  color:var(--ac);font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  padding:.5rem .7rem;outline:none;transition:border-color .2s,box-shadow .2s
+}
+.txt-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(56,232,255,.12)}
+.txt-in::placeholder{color:var(--tx3)}
+.txt-in.err{border-color:var(--rd);color:var(--rd)}
+.err-msg{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--rd);margin-top:.3rem;display:none}
+.err-msg.show{display:block}
+.byte-counter{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--tx3);margin-top:.3rem;font-weight:700}
+.byte-counter.ok span{color:var(--gr)}
+.byte-counter.warn span{color:var(--or)}
+.byte-counter.bad span{color:var(--rd)}
+.key-display{
+  font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--pu);
+  background:rgba(192,132,252,.07);border:1.5px solid rgba(192,132,252,.2);
+  padding:.45rem .6rem;margin-top:.4rem;word-break:break-all;line-height:1.55;
+  max-height:58px;overflow:hidden;border-radius:8px
+}
+.action-btn{
+  width:100%;padding:.65rem;border:none;border-radius:10px;
+  font-family:'Fredoka One',cursive;font-size:.88rem;letter-spacing:.03em;
+  cursor:pointer;transition:all .22s;margin-top:.4rem;
+  display:flex;align-items:center;justify-content:center;gap:.45rem
+}
+.btn-enc{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#001a2e}
+.btn-enc:hover:not(:disabled){box-shadow:0 6px 24px rgba(56,232,255,.5);transform:translateY(-2px)}
+.btn-dec{background:linear-gradient(135deg,var(--pu),var(--pu2));color:#fff}
+.btn-dec:hover:not(:disabled){box-shadow:0 6px 24px rgba(192,132,252,.5);transform:translateY(-2px)}
+.btn-reset{background:transparent;color:var(--tx2);border:1.5px solid var(--bd2);border-radius:10px}
+.btn-reset:hover{border-color:var(--tx2);color:var(--tx)}
+.action-btn:disabled{opacity:.35;cursor:default;transform:none!important;box-shadow:none!important}
+.result-card{background:var(--bg);border:1.5px solid rgba(74,222,128,.25);padding:.6rem .7rem;margin-top:.5rem;border-radius:8px}
+.result-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;font-weight:700;color:var(--gr);margin-bottom:.28rem;letter-spacing:.1em}
+.result-val{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gr);word-break:break-all;line-height:1.55}
+
+/* ════ CENTER PANEL ════ */
+.center-panel{
+  display:flex;flex-direction:column;align-items:center;
+  padding:.7rem 1rem;overflow:hidden;position:relative;
+}
+/* Idle */
+.center-idle{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:.75rem
+}
+.ci-glyph{
+  font-size:4rem;animation:idleFloat 3s ease-in-out infinite;margin-bottom:.3rem;
+  filter:drop-shadow(0 0 20px rgba(56,232,255,.4))
+}
+@keyframes idleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.ci-title{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--tx)}
+.ci-sub{font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:600;color:var(--tx2);line-height:1.75;max-width:350px}
+.ci-steps{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem;max-width:320px}
+.ci-step{
+  display:flex;align-items:center;gap:.6rem;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px;
+  padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--tx2)
+}
+.ci-step-num{
+  width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--pu));
+  color:#fff;font-family:'Fredoka One',cursive;font-size:.7rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+
+/* Enc result */
+.enc-result-center{display:flex;flex-direction:column;align-items:center;gap:.8rem;padding:.5rem 0;flex-shrink:0;width:100%}
+.enc-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--tx3);letter-spacing:.14em;font-weight:700}
+.enc-hex{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  background:var(--bg3);border:1.5px solid var(--bd2);
+  padding:.6rem .85rem;word-break:break-all;line-height:1.55;max-width:520px;text-align:center;
+  border-radius:10px
+}
+.enc-hex.plain{color:var(--ac);border-color:rgba(56,232,255,.25)}
+.enc-hex.cipher{color:var(--gr);border-color:rgba(74,222,128,.25)}
+.enc-arrow{font-size:1.5rem;color:var(--tx3)}
+
+/* ════ TUTORIAL VIEW ════ */
+#tutView{display:none;flex-direction:column;align-items:center;width:100%;gap:0;overflow-y:auto}
+
+/* Step banner */
+.step-banner{width:100%;display:flex;align-items:center;justify-content:center;gap:.65rem;flex-shrink:0;margin-bottom:.45rem;flex-wrap:wrap}
+.step-op-name{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--tx);text-align:center}
+.step-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;border:1.5px solid;padding:.22rem .6rem;border-radius:20px}
+.badge-ark{color:var(--pu);border-color:rgba(192,132,252,.4);background:rgba(192,132,252,.1)}
+.badge-isr{color:var(--or);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.1)}
+.badge-isb{color:var(--rd);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.1)}
+.badge-imc{color:var(--gr);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.1)}
+.badge-done{color:var(--gr);border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.12)}
+.badge-idle{color:var(--tx3);border-color:var(--bd2);background:transparent}
+
+/* Progress bar */
+.prog-wrap{width:100%;max-width:540px;flex-shrink:0;margin-bottom:.5rem}
+.prog-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--pu),var(--pi));transition:width .4s ease;border-radius:3px;box-shadow:0 0 10px rgba(56,232,255,.4)}
+.prog-info{display:flex;justify-content:space-between;margin-top:.3rem}
+.prog-pct{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--tx3);font-weight:700}
+
+/* ════ AES DIAGRAM ════ */
+.aes-diagram{
+  display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;margin-bottom:.5rem;
+  position:relative;
+}
+.diag-node{
+  display:flex;align-items:center;justify-content:center;
+  width:140px;min-height:36px;padding:.32rem .75rem;
+  border:2px solid;border-radius:10px;
+  font-family:'Fredoka One',cursive;font-size:.72rem;text-align:center;
+  cursor:pointer;transition:all .22s;position:relative;white-space:nowrap;
+}
+.diag-node.n-ct{border-color:rgba(56,232,255,.4);color:var(--ac);background:rgba(56,232,255,.08)}
+.diag-node.n-ark{border-color:rgba(192,132,252,.45);color:var(--pu);background:rgba(192,132,252,.1)}
+.diag-node.n-imc{border-color:rgba(74,222,128,.45);color:var(--gr);background:rgba(74,222,128,.1)}
+.diag-node.n-isr{border-color:rgba(251,146,60,.45);color:var(--or);background:rgba(251,146,60,.1)}
+.diag-node.n-isb{border-color:rgba(248,113,113,.45);color:var(--rd);background:rgba(248,113,113,.1)}
+.diag-node.n-pt{border-color:rgba(74,222,128,.55);color:var(--gr);background:rgba(74,222,128,.13)}
+.diag-node.active-node{
+  box-shadow:0 0 22px currentColor,0 0 44px rgba(255,255,255,.1);transform:scale(1.08);
+}
+.diag-arrow{
+  width:2px;height:16px;background:linear-gradient(to bottom,var(--tx3),rgba(255,255,255,.1));
+  margin:0 auto;position:relative;flex-shrink:0;
+}
+.diag-arrow::after{
+  content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--tx3);
+}
+.diag-label{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--tx3);margin:1px 0;font-weight:700}
+.diag-row{display:flex;align-items:center;gap:.3rem;position:relative}
+
+/* ════ MATRIX AREA ════ */
+.matrix-area{display:flex;align-items:center;justify-content:center;gap:1.2rem;flex-shrink:0;margin-bottom:.45rem}
+.matrix-wrap{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.matrix-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;font-weight:700;color:var(--tx3);letter-spacing:.1em}
+.state-matrix,.rk-matrix{display:grid;grid-template-columns:repeat(4,56px);gap:4px}
+
+/* Cells */
+.mc,.rkc{
+  width:56px;height:46px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;
+  border:1.5px solid var(--bd);border-radius:8px;
+  background:rgba(56,232,255,.05);color:var(--ac);
+  transition:background .25s,border-color .25s,color .2s,transform .25s,box-shadow .25s;
+  position:relative;cursor:default;
+}
+.rkc{background:rgba(192,132,252,.07);border-color:rgba(192,132,252,.25);color:var(--pu)}
+.rkc.hi{background:rgba(192,132,252,.28);border-color:var(--pu);color:#f5d0fe;box-shadow:0 0 12px rgba(192,132,252,.35)}
+.mc.hi-rk{background:rgba(192,132,252,.22);border-color:var(--pu);color:#f5d0fe;box-shadow:0 0 10px rgba(192,132,252,.28)}
+.mc.hi-sub{background:rgba(248,113,113,.18);border-color:var(--rd);color:#fca5a5;box-shadow:0 0 10px rgba(248,113,113,.25)}
+.mc.hi-row0{background:rgba(56,232,255,.1);border-color:rgba(56,232,255,.45);color:var(--ac)}
+.mc.hi-row1{background:rgba(251,146,60,.18);border-color:var(--or);color:#fdba74}
+.mc.hi-row2{background:rgba(251,191,36,.15);border-color:var(--ye);color:#fde047}
+.mc.hi-row3{background:rgba(74,222,128,.15);border-color:var(--gr);color:#86efac}
+.mc.hi-col0{background:rgba(56,232,255,.22);border-color:var(--ac);color:#fff;box-shadow:0 0 12px rgba(56,232,255,.35)}
+.mc.hi-col1{background:rgba(192,132,252,.22);border-color:var(--pu);color:#f5d0fe;box-shadow:0 0 12px rgba(192,132,252,.35)}
+.mc.hi-col2{background:rgba(74,222,128,.22);border-color:var(--gr);color:#86efac;box-shadow:0 0 12px rgba(74,222,128,.35)}
+.mc.hi-col3{background:rgba(244,114,182,.22);border-color:var(--pi);color:#fbcfe8;box-shadow:0 0 12px rgba(244,114,182,.35)}
+.mc.done{background:rgba(74,222,128,.18);border-color:var(--gr);color:var(--gr);box-shadow:0 0 14px rgba(74,222,128,.25)}
+.mc.changed{animation:flashChange .45s ease}
+@keyframes flashChange{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.25);background:rgba(255,255,255,.28);box-shadow:0 0 22px rgba(255,255,255,.4)}
+  100%{transform:scale(1)}
+}
+.mc.slide-right{animation:slideRight .3s ease}
+@keyframes slideRight{0%{transform:translateX(-12px);opacity:.5}100%{transform:translateX(0);opacity:1}}
+
+/* ════ OP SYMBOL ════ */
+.op-sym-wrap{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.op-sym{
+  font-size:1.6rem;color:var(--ye);
+  animation:symPulse 1.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 8px var(--ye))
+}
+@keyframes symPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.op-sym-lbl{font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;color:var(--tx3);letter-spacing:.1em}
+
+/* ════ INFO BAR ════ */
+.info-bar{
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px;
+  padding:.45rem .75rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem
+}
+.eq-v{color:var(--ac);font-weight:700;background:rgba(56,232,255,.1);padding:.1rem .35rem;border-radius:5px}
+.eq-v.k{color:var(--pu);background:rgba(192,132,252,.1)}
+.eq-v.r{color:var(--gr);background:rgba(74,222,128,.1)}
+.eq-op{color:var(--ye);font-weight:700;font-size:.8rem}
+.eq-info{color:var(--tx2);font-size:.6rem;font-weight:700}
+
+/* ════ SPEED ROW ════ */
+.speed-row{display:flex;align-items:center;gap:.4rem;flex-shrink:0;margin-bottom:.4rem;flex-wrap:wrap;justify-content:center}
+.speed-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--tx3)}
+.speed-btn{
+  padding:.2rem .55rem;background:var(--bg3);border:1.5px solid var(--bd2);
+  color:var(--tx2);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;cursor:pointer;
+  transition:all .18s;border-radius:8px
+}
+.speed-btn:hover,.speed-btn.active{border-color:var(--ac);color:var(--ac);background:rgba(56,232,255,.08)}
+
+/* ════ NAVIGATION ════ */
+.step-nav{
+  display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-bottom:.5rem;
+}
+.nav-btn{
+  padding:.5rem 1.2rem;border:2px solid;border-radius:10px;
+  font-family:'Fredoka One',cursive;font-size:.78rem;cursor:pointer;transition:all .22s;
+}
+.nav-btn:first-child{border-color:rgba(56,232,255,.35);color:var(--ac);background:rgba(56,232,255,.06)}
+.nav-btn:last-child{border-color:rgba(192,132,252,.35);color:var(--pu);background:rgba(192,132,252,.06)}
+.nav-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--shadow)}
+.nav-btn:disabled{opacity:.3;cursor:default;transform:none!important}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:.1rem}
+.nav-kb{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--tx3);font-weight:700}
+
+/* ════ SHIFT ROWS VISUAL ════ */
+.shift-visual{display:none;flex-direction:column;gap:.3rem;max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem;padding:.5rem .7rem;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px}
+.shift-visual.show{display:flex}
+.shift-row-vis{display:flex;align-items:center;gap:.5rem}
+.shift-row-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;min-width:36px}
+.shift-row-cells{display:flex;gap:3px}
+.shift-arrow-row{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;min-width:28px;text-align:center}
+.src{
+  width:42px;height:32px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  border:1.5px solid;border-radius:6px;background:rgba(255,255,255,.05);
+  transition:all .3s
+}
+.src.moving{animation:cellSlideIn .4s ease forwards}
+@keyframes cellSlideIn{0%{transform:translateX(-10px);opacity:.4}100%{transform:translateX(0);opacity:1}}
+.shift-arrow-anim{display:flex;align-items:center;gap:.2rem;font-size:.65rem;font-weight:700}
+
+/* ════ STEP ARROWS VISUAL ════ */
+.step-arrows-visual{
+  max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px;padding:.5rem .7rem;
+  display:none
+}
+.step-arrows-visual.show{display:block}
+.arrows-title{font-family:'Fredoka One',cursive;font-size:.75rem;color:var(--ac);margin-bottom:.35rem}
+.arrows-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.2rem}
+.arrow-cell-before{
+  width:40px;height:32px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  border:1.5px solid var(--bd);border-radius:6px;background:rgba(255,255,255,.05);
+  color:var(--tx2)
+}
+.arrow-sym{font-size:.85rem;color:var(--ye)}
+.arrow-cell-after{
+  width:40px;height:32px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  border:1.5px solid var(--gr);border-radius:6px;background:rgba(74,222,128,.08);
+  color:var(--gr);animation:popIn .3s ease
+}
+@keyframes popIn{0%{transform:scale(.7);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.arrow-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--tx3);font-weight:700}
+
+/* ════ SBOX SECTION ════ */
+.sbox-section{display:none;flex-direction:column;gap:.4rem;max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem}
+.sbox-section.show{display:flex}
+.sbox-header{
+  font-family:'Fredoka One',cursive;font-size:.78rem;color:var(--rd);
+  background:rgba(248,113,113,.08);border:1.5px solid rgba(248,113,113,.25);
+  padding:.35rem .65rem;border-radius:8px;display:flex;align-items:center;gap:.5rem
+}
+.sbox-header span{font-size:.6rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--tx3)}
+.sbox-grid{
+  display:grid;grid-template-columns:repeat(16,1fr);gap:2px;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:8px;padding:6px;
+  max-height:130px;overflow-y:auto
+}
+.sbox-cell{
+  display:flex;align-items:center;justify-content:center;
+  min-height:16px;cursor:default;border-radius:3px;transition:all .2s
+}
+.sbox-val{font-family:'JetBrains Mono',monospace;font-size:.48rem;font-weight:700;color:var(--tx3);line-height:1}
+.sbox-cell.hi{background:rgba(248,113,113,.3);border-radius:3px}
+.sbox-cell.hi .sbox-val{color:var(--rd);font-size:.56rem}
+
+/* ════ RIGHT PANEL ════ */
+.right-panel{
+  background:var(--bg2);border-left:1px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.rp-hdr{
+  padding:.75rem 1rem;border-bottom:1px solid var(--bd);
+  font-family:'Fredoka One',cursive;font-size:.82rem;color:var(--ac);
+  display:flex;align-items:center;gap:.5rem;flex-shrink:0;
+  background:linear-gradient(90deg,var(--bg3),var(--bg2))
+}
+.rp-hdr-dot{width:10px;height:10px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);animation:logoPulse 2s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.35);box-shadow:0 0 10px var(--ac)}}
+.flowchart-wrap{flex:1;overflow-y:auto;padding:.5rem}
+
+/* Flowchart items */
+.fc-round-hdr{
+  font-family:'Fredoka One',cursive;font-size:.7rem;color:var(--tx3);
+  padding:.3rem .6rem;margin:.3rem 0 .15rem;
+  background:var(--bg3);border-radius:8px;display:flex;align-items:center;gap:.4rem;
+  border-left:3px solid var(--bd2);
+}
+.fc-item{
+  display:flex;align-items:center;gap:.5rem;padding:.35rem .6rem;border-radius:8px;
+  cursor:pointer;transition:all .2s;border:1.5px solid transparent;margin:.08rem 0;
+}
+.fc-item:hover{background:rgba(56,232,255,.06);border-color:rgba(56,232,255,.2)}
+.fc-item.passed{opacity:.45}
+.fc-item.active{background:rgba(192,132,252,.12);border-color:rgba(192,132,252,.4);opacity:1}
+.fc-dot{width:7px;height:7px;border-radius:50%;background:var(--bd2);flex-shrink:0;transition:background .2s}
+.fc-item.active .fc-dot{background:var(--pu);box-shadow:0 0 8px var(--pu)}
+.fc-item.passed .fc-dot{background:var(--gr2)}
+.fc-name{font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;color:var(--tx)}
+.fc-sub{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--tx3);font-weight:700}
+
+/* ════ MASCOT ════ */
+.mascot-container{
+  position:fixed;bottom:1.2rem;right:1.2rem;z-index:400;
+  display:flex;flex-direction:column;align-items:flex-end;gap:.5rem
+}
+.mascot-body{
+  display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+}
+.mascot-body.collapsed .speech-bubble{display:none}
+.mascot-body.visible .speech-bubble{display:block}
+.speech-bubble{
+  background:var(--bg3);border:2px solid var(--pu);border-radius:12px;
+  padding:.6rem .85rem;max-width:200px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(192,132,252,.3);
+  animation:bubblePop .3s cubic-bezier(.34,1.56,.64,1)
+}
+@keyframes bubblePop{0%{transform:scale(.8) translateY(10px);opacity:0}100%{transform:scale(1);opacity:1}}
+.sb-txt{font-size:.72rem;font-weight:700;color:var(--tx);line-height:1.55}
+.mascot-svg-wrap{width:70px;height:84px;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 4px 12px rgba(192,132,252,.4))}
+.mascot-svg-wrap:hover{transform:scale(1.1) rotate(5deg)}
+.mascot-toggle{
+  width:52px;height:52px;border-radius:50%;border:2px solid rgba(192,132,252,.45);
+  background:linear-gradient(135deg,rgba(192,132,252,.2),rgba(56,232,255,.1));
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:1.6rem;transition:all .2s;box-shadow:var(--shadow)
+}
+.mascot-toggle:hover{transform:scale(1.15) rotate(10deg);box-shadow:0 0 22px rgba(192,132,252,.6)}
+
+/* ════ HELP BTN (small floating) ════ */
+.help-btn{
+  position:fixed;bottom:1.2rem;left:1.2rem;z-index:400;
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));
+  border:none;color:#001a2e;font-size:1.4rem;cursor:pointer;
+  box-shadow:0 4px 20px rgba(56,232,255,.45);
+  transition:all .22s;display:flex;align-items:center;justify-content:center;
+  animation:helpPulse 3s ease-in-out infinite
+}
+@keyframes helpPulse{0%,100%{box-shadow:0 4px 20px rgba(56,232,255,.45)}50%{box-shadow:0 4px 30px rgba(56,232,255,.8),0 0 0 6px rgba(56,232,255,.15)}}
+.help-btn:hover{transform:scale(1.15) rotate(-10deg)}
+.help-popup{
+  position:fixed;bottom:4.5rem;left:1.2rem;z-index:500;
+  background:var(--bg3);border:2px solid var(--ac);border-radius:12px;
+  padding:.8rem 1rem;max-width:220px;box-shadow:var(--glow-ac);display:none
+}
+.help-popup.show{display:block;animation:bubblePop .3s ease}
+.help-popup h4{font-family:'Fredoka One',cursive;font-size:.85rem;color:var(--ac);margin-bottom:.4rem}
+.help-popup p{font-size:.72rem;font-weight:700;color:var(--tx2);line-height:1.6}
+.help-popup kbd{
+  background:var(--bg4);border:1px solid var(--bd2);border-radius:4px;
+  padding:.05rem .3rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ac)
+}
+
+/* ════ UTILITIES ════ */
+.hidden{display:none!important}
+.sep{height:1px;background:var(--bd2);margin:.35rem 0}
+
+/* ════ SOUND INDICATOR ════ */
+.sound-indicator{
+  position:fixed;top:68px;right:1rem;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  color:var(--ac);background:var(--bg3);border:1.5px solid var(--bd);
+  padding:.28rem .65rem;border-radius:20px;opacity:0;pointer-events:none;
+  transition:opacity .3s;z-index:300
+}
+.sound-indicator.show{opacity:1}
+
+/* ════ STEP EXPLANATION ════ */
+.step-explain{
+  width:100%;max-width:540px;flex-shrink:0;margin-bottom:.4rem;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px;
+  padding:.55rem .75rem;display:none
+}
+.step-explain.show{display:block}
+.explain-title{font-family:'Fredoka One',cursive;font-size:.75rem;color:var(--tx);margin-bottom:.3rem}
+.explain-steps{display:flex;flex-direction:column;gap:.25rem}
+.explain-step{
+  display:flex;align-items:flex-start;gap:.45rem;
+  font-family:'Nunito',sans-serif;font-size:.74rem;font-weight:700;color:var(--tx2);line-height:1.55
+}
+.explain-num{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--ac);
+  color:var(--ac);font-family:'Fredoka One',cursive;font-size:.58rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px
+}
+.explain-step .step-arrow{color:var(--ye);font-size:.9rem;margin:0 2px}
+
+/* ════ COLUMN ARROW ANIMATION ════ */
+.col-anim-wrap{
+  display:none;max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem;
+  background:var(--bg3);border:1.5px solid var(--bd2);border-radius:10px;padding:.5rem .7rem
+}
+.col-anim-wrap.show{display:block}
+.col-anim-title{font-family:'Fredoka One',cursive;font-size:.75rem;color:var(--gr);margin-bottom:.4rem}
+.col-anim-cols{display:flex;gap:.6rem;justify-content:center}
+.col-anim-col{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.col-anim-cells{display:flex;flex-direction:column;gap:3px}
+.col-anim-cell{
+  width:40px;height:30px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  border:1.5px solid;border-radius:6px;
+}
+.col-anim-arrow{font-size:1.2rem;margin:.2rem 0}
+.col-anim-label{font-family:'JetBrains Mono',monospace;font-size:.52rem;font-weight:700;color:var(--tx3)}
+
+/* ════ SUBYTES TABLE SECTION ════ */
+.subbytes-table-section{display:none;max-width:540px;width:100%;flex-shrink:0;margin-bottom:.4rem}
+.subbytes-table-section.show{display:flex;flex-direction:column;gap:.35rem}
+
+/* Bright classroom skin and larger learning controls */
+body{
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255,212,59,.30), transparent 24%),
+    radial-gradient(circle at 85% 8%, rgba(0,168,255,.28), transparent 26%),
+    linear-gradient(135deg,#16226f 0%,#2946c7 46%,#ff5fb7 100%);
+}
+#bgCanvas{opacity:.72}
+.app-shell{grid-template-rows:72px 1fr}
+.main-grid{grid-template-columns:minmax(340px,380px) 1fr minmax(320px,360px)}
+header{height:72px;background:linear-gradient(90deg,#ffed66,#77e4ff 45%,#ff8bd4);border-bottom:4px solid rgba(15,23,42,.18);color:#10203d}
+.h-logo{font-size:1.65rem;color:#0649d9;text-shadow:0 2px 0 #fff}
+.h-badge,.h-key-val,.h-btn,.h-status,.a11y-btn{background:rgba(255,255,255,.72);color:#12305a;border-color:rgba(15,23,42,.16)}
+.left-panel,.right-panel{background:rgba(255,255,255,.78);backdrop-filter:blur(12px)}
+.theory-box,.ctrl-card,.step-explain,.info-bar,.shift-visual,.step-arrows-visual,.col-anim-wrap,.sbox-grid,.sbox-header{background:var(--card-bg);border:3px solid rgba(15,23,42,.12);box-shadow:var(--shadow)}
+.theory-op,.ci-title,.step-op-name,.rp-hdr,.explain-title,.arrows-title,.sbox-header,.col-anim-title{color:#12305a;text-shadow:0 2px 0 rgba(255,255,255,.9)}
+.theory-desc,.ci-sub,.explain-step,.eq-info,.fc-name,.sb-txt{color:#243b63}
+.controls{padding:1rem;gap:.9rem}
+.ctrl-card{padding:1rem 1.05rem;border-radius:18px}
+.action-btn,.nav-btn{min-height:48px;border-radius:16px;font-size:1rem}
+.center-panel{padding:1rem 1.25rem}
+.prog-wrap,.step-explain,.info-bar,.shift-visual,.step-arrows-visual,.sbox-section,.col-anim-wrap{max-width:720px}
+.diag-node{width:182px;min-height:46px;border-radius:16px;font-size:.9rem;background:#fff}
+.diag-arrow{height:22px;width:4px;border-radius:2px}
+.state-matrix,.rk-matrix{grid-template-columns:repeat(4,70px);gap:7px}
+.mc,.rkc{width:70px;height:58px;border-radius:16px;border-width:3px;font-size:1.05rem;background:#fff}
+.matrix-area{gap:1.6rem;margin-bottom:.7rem}
+.src,.arrow-cell-before,.arrow-cell-after{width:54px;height:42px;border-width:2px;border-radius:12px;font-size:.85rem;background:#fff}
+.a11y-panel{width:320px;border-width:3px;border-radius:20px}
+.a11y-row label{font-size:.95rem;color:var(--a11y-tx)}
+.a11y-size button{min-width:52px;min-height:40px;font-size:.95rem;border-radius:12px;color:var(--a11y-tx);background:var(--a11y-btn);border-color:var(--a11y-bdr)}
+body.a11y-xl .main-grid{grid-template-columns:minmax(390px,430px) 1fr minmax(360px,400px)}
+body.a11y-xxl .main-grid{grid-template-columns:minmax(430px,470px) 1fr minmax(380px,430px)}
+body.a11y-xl .mc,body.a11y-xl .rkc{width:82px;height:68px;font-size:1.18rem}
+body.a11y-xxl .mc,body.a11y-xxl .rkc{width:96px;height:78px;font-size:1.32rem}
+body.a11y-xl .state-matrix,body.a11y-xl .rk-matrix{grid-template-columns:repeat(4,82px)}
+body.a11y-xxl .state-matrix,body.a11y-xxl .rk-matrix{grid-template-columns:repeat(4,96px)}
+
+/* Detailed SubBytes learning path */
+.subbytes-guide{display:flex;flex-direction:column;gap:.55rem}
+.subbytes-guide-note{padding:.65rem .8rem;border-radius:14px;background:#eef8ff;border:2px dashed rgba(0,168,255,.42);color:#12305a;font-weight:900;line-height:1.45}
+.subbytes-trace-grid{display:grid;grid-template-columns:repeat(4,minmax(132px,1fr));gap:.55rem}
+.subbyte-step-card{background:#fff;border:2px solid rgba(15,23,42,.12);border-radius:16px;padding:.55rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.35rem;box-shadow:0 5px 0 rgba(15,23,42,.10)}
+.subbyte-byte{font-family:'JetBrains Mono',monospace;font-weight:900;text-align:center;border-radius:12px;padding:.35rem;background:#e0f2fe;color:#0369a1}
+.subbyte-out{font-family:'JetBrains Mono',monospace;font-weight:900;text-align:center;border-radius:12px;padding:.35rem;background:#dcfce7;color:#15803d}
+.subbyte-arrow{color:#f97316;font-size:1.2rem;font-weight:900;text-align:center;animation:arrowNudge .9s ease-in-out infinite}
+.subbyte-lookup{grid-column:1/4;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#334155;text-align:center;font-weight:800}
+@keyframes arrowNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.sbox-grid{grid-template-columns:34px repeat(16,minmax(28px,1fr));gap:3px;max-height:260px}
+.sbox-cell{min-height:24px;background:#fff;border:1px solid rgba(15,23,42,.08)}
+.sbox-cell.sbox-axis{background:#1d4ed8;color:#fff;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:900}
+.sbox-cell.sbox-corner{background:#0f172a}
+.sbox-cell.hi{background:#fff700!important;border:3px solid #ff4d6d!important;transform:scale(1.08);z-index:2}
+.sbox-val{font-size:.62rem;color:#23324a}
+
+/* Berkut guide */
+.mascot-container{right:1.3rem;bottom:1.3rem}
+.mascot-svg-wrap{width:92px;height:118px;filter:drop-shadow(0 8px 0 rgba(15,23,42,.14)) drop-shadow(0 14px 22px rgba(15,23,42,.24))}
+.mascot-svg-wrap:hover{transform:scale(1.08) rotate(-2deg)}
+.berkut-summon{position:fixed;right:1.25rem;bottom:1.25rem;z-index:410;width:58px;height:58px;border-radius:50%;border:4px solid #fff;background:linear-gradient(135deg,#16a34a,#22c55e 48%,#facc15);color:#fff;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;box-shadow:var(--shadow);display:none;align-items:center;justify-content:center}
+.berkut-summon.show{display:flex}
+.berkut-summon:hover{transform:scale(1.12)}
+.help-btn,.help-popup{display:none!important}
+
+/* Refined palette based on the examples: warm paper, clean blue, soft operation colors */
+:root{
+  --bg:#f2e8d8;
+  --bg2:#eadccb;
+  --bg3:#fffaf2;
+  --bg4:#f6efe5;
+  --bg5:#efe1cf;
+  --ac:#1a58c8;
+  --ac2:#1747a2;
+  --pu:#7038c8;
+  --pu2:#5a2da0;
+  --gr:#1a9a52;
+  --gr2:#147a41;
+  --rd:#cc2828;
+  --or:#c96010;
+  --ye:#d4880a;
+  --pi:#c04f88;
+  --tx:#251510;
+  --tx2:#5d4939;
+  --tx3:#7a5540;
+  --bd:rgba(160,110,70,.20);
+  --bd2:rgba(160,110,70,.18);
+  --shadow:0 4px 18px rgba(60,38,20,.08);
+  --card-bg:rgba(255,251,240,.94);
+  --glow-ac:0 0 0 4px rgba(26,88,200,.10),0 12px 28px rgba(26,88,200,.16);
+  --glow-pu:0 0 0 4px rgba(112,56,200,.10),0 12px 28px rgba(112,56,200,.16);
+  --glow-gr:0 0 0 4px rgba(26,154,82,.10),0 12px 28px rgba(26,154,82,.16);
+}
+body{
+  background:
+    radial-gradient(circle at 14% 10%, rgba(26,88,200,.10), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(212,136,10,.14), transparent 30%),
+    linear-gradient(135deg,#f2e8d8 0%,#faf5ee 48%,#e8f0ff 100%);
+}
+#bgCanvas{opacity:.52}
+header{
+  background:rgba(250,245,238,.94);
+  border-bottom:1px solid var(--bd);
+  box-shadow:0 8px 30px rgba(60,38,20,.08);
+  color:var(--tx);
+}
+.h-logo{color:var(--ac);text-shadow:none}
+.h-badge,.h-key-val,.h-btn,.h-status,.a11y-btn{background:#fffaf2;color:var(--tx2);border-color:var(--bd)}
+.left-panel,.right-panel{background:rgba(250,245,238,.78);border-color:var(--bd)}
+.theory-box,.ctrl-card,.step-explain,.info-bar,.shift-visual,.step-arrows-visual,.col-anim-wrap,.sbox-grid,.sbox-header,.center-theory-card,.cell-explain-panel{
+  background:var(--card-bg);
+  border:1.5px solid var(--bd);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.theory-op,.ci-title,.step-op-name,.rp-hdr,.explain-title,.arrows-title,.sbox-header,.col-anim-title{color:var(--tx);text-shadow:none}
+.theory-desc,.ci-sub,.explain-step,.eq-info,.fc-name,.sb-txt{color:var(--tx2)}
+.diag-node,.mc,.rkc,.src,.arrow-cell-before,.arrow-cell-after,.subbyte-step-card{background:#fff;border-color:var(--bd)}
+.btn-enc,.nav-btn:last-child{background:linear-gradient(135deg,var(--ac),var(--pu));color:#fff}
+.btn-dec{background:linear-gradient(135deg,var(--gr),#0ea5e9);color:#fff}
+.prog-fill{background:linear-gradient(90deg,var(--ac),var(--pu),var(--gr))}
+
+.center-theory-card{
+  width:100%;max-width:720px;margin:0 0 .65rem;padding:.8rem 1rem;
+  display:flex;flex-direction:column;gap:.35rem;flex-shrink:0
+}
+.center-theory-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:800;letter-spacing:.14em;
+  color:var(--ac);text-transform:uppercase
+}
+.center-theory-title{font-family:'Fredoka One',cursive;font-size:1rem;color:var(--tx);line-height:1.3}
+.center-theory-desc{font-size:.86rem;font-weight:700;line-height:1.55;color:var(--tx2)}
+.center-theory-formula{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:800;color:var(--ac);
+  background:rgba(26,88,200,.07);border:1px solid rgba(26,88,200,.20);
+  border-radius:10px;padding:.42rem .6rem;word-break:break-word
+}
+
+.mc{cursor:pointer;appearance:none;border-style:solid}
+.mc::after{
+  content:'?';position:absolute;right:5px;top:4px;width:16px;height:16px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(26,88,200,.10);color:var(--ac);
+  font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;opacity:0;transition:opacity .2s
+}
+.mc:hover{transform:translateY(-2px);box-shadow:var(--glow-ac)}
+.mc:hover::after,.mc.selected-cell::after{opacity:1}
+.mc.selected-cell{outline:3px solid var(--ye);outline-offset:2px}
+.cell-explain-panel{
+  display:none;width:100%;max-width:720px;margin:0 0 .55rem;padding:.8rem 1rem;flex-shrink:0
+}
+.cell-explain-panel.show{display:block}
+.cell-explain-title{font-family:'Fredoka One',cursive;color:var(--ac);font-size:.95rem;margin-bottom:.4rem}
+.cell-explain-body{color:var(--tx2);font-size:.86rem;font-weight:800;line-height:1.6}
+.cell-explain-chain{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin-top:.55rem}
+.cell-chip{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:900;
+  background:#fff;border:1.5px solid var(--bd);border-radius:10px;padding:.32rem .5rem;color:var(--tx)
+}
+.cell-chip.blue{color:var(--ac);background:rgba(26,88,200,.08)}
+.cell-chip.gold{color:var(--ye);background:rgba(212,136,10,.10)}
+.cell-chip.green{color:var(--gr);background:rgba(26,154,82,.10)}
+.cell-arrow{font-weight:900;color:var(--or)}
+
+.subbytes-guide-note{background:#f0f5ff;border-color:rgba(26,88,200,.25);color:var(--tx)}
+.subbyte-step-card{box-shadow:none;border-color:var(--bd)}
+.subbyte-byte{background:#eaf0ff;color:var(--ac)}
+.subbyte-out{background:#e8fff0;color:var(--gr)}
+.sbox-cell.sbox-axis{background:var(--ac)}
+.sbox-cell.hi{background:#fff8d8!important;border-color:var(--ye)!important}
+.mascot-photo{
+  width:118px;height:148px;object-fit:contain;cursor:pointer;
+  filter:drop-shadow(0 12px 20px rgba(37,21,16,.20));
+  transition:transform .2s ease
+}
+.mascot-photo:hover{transform:scale(1.05) translateY(-2px)}
+.berkut-summon{background:linear-gradient(135deg,var(--ac),var(--pu));border-color:#fffaf2;color:#fff}
+
+/* Premium cybersecurity dark theme */
+[data-theme="dark"]{
+  --bg:#0B0F19;
+  --bg2:#111827;
+  --bg3:#1E293B;
+  --bg4:#273449;
+  --bg5:#334155;
+  --ac:#6366F1;
+  --ac2:#4F46E5;
+  --pu:#818CF8;
+  --pu2:#6366F1;
+  --gr:#10B981;
+  --gr2:#059669;
+  --rd:#F43F5E;
+  --or:#F59E0B;
+  --ye:#FBBF24;
+  --pi:#EC4899;
+  --tx:#F8FAFC;
+  --tx2:#CBD5E1;
+  --tx3:#94A3B8;
+  --bd:rgba(148,163,184,.18);
+  --bd2:rgba(148,163,184,.12);
+  --shadow:0 18px 50px rgba(0,0,0,.42);
+  --card-bg:rgba(30,41,59,.84);
+  --glow-ac:0 0 0 1px rgba(99,102,241,.45),0 0 24px rgba(99,102,241,.30);
+  --glow-pu:0 0 0 1px rgba(129,140,248,.45),0 0 24px rgba(129,140,248,.28);
+  --glow-gr:0 0 0 1px rgba(16,185,129,.45),0 0 24px rgba(16,185,129,.28);
+}
+[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 20% 8%, rgba(99,102,241,.20), transparent 30%),
+    radial-gradient(circle at 82% 0%, rgba(16,185,129,.12), transparent 28%),
+    linear-gradient(135deg,#0B0F19 0%,#111827 48%,#0B0F19 100%);
+}
+[data-theme="dark"] header{
+  background:rgba(11,15,25,.88);
+  border-bottom:1px solid rgba(148,163,184,.16);
+  box-shadow:0 18px 45px rgba(0,0,0,.38);
+}
+[data-theme="dark"] .left-panel,
+[data-theme="dark"] .right-panel{background:rgba(15,23,42,.78)}
+[data-theme="dark"] .h-badge,
+[data-theme="dark"] .h-key-val,
+[data-theme="dark"] .h-btn,
+[data-theme="dark"] .h-status,
+[data-theme="dark"] .a11y-btn{
+  background:rgba(30,41,59,.72);color:var(--tx2);border-color:var(--bd)
+}
+[data-theme="dark"] .theory-box,
+[data-theme="dark"] .ctrl-card,
+[data-theme="dark"] .step-explain,
+[data-theme="dark"] .info-bar,
+[data-theme="dark"] .shift-visual,
+[data-theme="dark"] .step-arrows-visual,
+[data-theme="dark"] .col-anim-wrap,
+[data-theme="dark"] .sbox-grid,
+[data-theme="dark"] .sbox-header,
+[data-theme="dark"] .center-theory-card,
+[data-theme="dark"] .cell-explain-panel{
+  background:linear-gradient(180deg,rgba(30,41,59,.92),rgba(15,23,42,.88));
+  border-color:rgba(148,163,184,.16);
+  box-shadow:var(--shadow);
+}
+[data-theme="dark"] .diag-node,
+[data-theme="dark"] .mc,
+[data-theme="dark"] .rkc,
+[data-theme="dark"] .src,
+[data-theme="dark"] .arrow-cell-before,
+[data-theme="dark"] .arrow-cell-after,
+[data-theme="dark"] .subbyte-step-card,
+[data-theme="dark"] .col-anim-cell,
+[data-theme="dark"] .cell-chip{
+  background:#111827;border-color:rgba(148,163,184,.20);color:var(--tx)
+}
+[data-theme="dark"] .btn-enc,
+[data-theme="dark"] .btn-dec,
+[data-theme="dark"] .nav-btn:last-child{
+  background:linear-gradient(135deg,#6366F1,#4F46E5);color:#F8FAFC;box-shadow:0 0 28px rgba(99,102,241,.28)
+}
+[data-theme="dark"] .result-val,
+[data-theme="dark"] .enc-hex.cipher,
+[data-theme="dark"] .cell-chip.green{color:#10B981}
+
+/* Language selector */
+.lang-switch{display:flex;align-items:center;gap:.25rem;background:rgba(30,41,59,.08);border:1px solid var(--bd);border-radius:999px;padding:.18rem;flex-shrink:0}
+.lang-btn{border:0;background:transparent;color:var(--tx3);font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:900;padding:.28rem .5rem;border-radius:999px;cursor:pointer}
+.lang-btn.active{background:var(--ac);color:#fff;box-shadow:var(--glow-ac)}
+
+/* AddRoundKey and lookup crosshair helpers */
+.prev-matrix{display:grid;grid-template-columns:repeat(4,70px);gap:7px}
+.prevc{
+  width:70px;height:58px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:900;
+  border:3px solid var(--bd);border-radius:16px;background:rgba(99,102,241,.08);color:var(--ac)
+}
+.prevc.row-selected,.mc.row-selected,.rkc.row-selected{box-shadow:inset 0 0 0 999px rgba(99,102,241,.08)}
+.prevc.col-selected,.mc.col-selected,.rkc.col-selected{outline:2px solid rgba(16,185,129,.42);outline-offset:2px}
+.rkc{cursor:pointer}
+.rkc:hover{transform:translateY(-2px);box-shadow:var(--glow-pu)}
+.rkc.selected-key{outline:3px solid var(--ye);outline-offset:2px}
+.prevc.hi{background:rgba(99,102,241,.16);border-color:var(--ac);box-shadow:var(--glow-ac)}
+.rkc.hi{background:rgba(129,140,248,.16);border-color:var(--pu);box-shadow:var(--glow-pu)}
+.xor-focus-line{height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);width:100%;margin:.35rem 0}
+.sbox-cell.row-line{background:rgba(99,102,241,.16)!important}
+.sbox-cell.col-line{background:rgba(99,102,241,.16)!important}
+.sbox-cell.hi{background:rgba(251,191,36,.26)!important;border-color:var(--ye)!important;color:var(--tx)!important}
+
+/* Clear InvMixColumns explanation */
+.mix-guide{display:grid;grid-template-columns:minmax(130px,.9fr) minmax(220px,1.35fr) minmax(160px,1fr);gap:.75rem;align-items:start}
+.col-anim-cols{display:block;width:100%}
+.mix-panel{border:1px solid var(--bd);border-radius:14px;padding:.7rem;background:rgba(255,255,255,.04)}
+.mix-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:900;color:var(--ac);margin-bottom:.5rem;letter-spacing:.08em}
+.mix-col-stack{display:grid;gap:.35rem}
+.mix-byte,.mix-coef,.mix-result{
+  font-family:'JetBrains Mono',monospace;font-weight:900;text-align:center;
+  border:1.5px solid var(--bd);border-radius:10px;padding:.35rem .45rem;background:rgba(99,102,241,.08)
+}
+.mix-coef{background:rgba(245,158,11,.10);color:var(--ye)}
+.mix-result{background:rgba(16,185,129,.10);color:var(--gr)}
+.mix-formula{font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.7;color:var(--tx2);padding:.35rem .45rem;border-radius:10px}
+.mix-formula.active{background:rgba(99,102,241,.12);color:var(--tx);box-shadow:var(--glow-ac)}
+
+/* Fixed high contrast overrides */
+body.high-contrast{
+  --bg:#000;--bg2:#000;--bg3:#000;--bg4:#050505;--bg5:#111;
+  --ac:#00FFFF;--gr:#00FF66;--pu:#FFEA00;--rd:#FF4D4D;--or:#FFEA00;--ye:#FFEA00;
+  --tx:#FFFFFF;--tx2:#FFFFFF;--tx3:#FFFFFF;--bd:#FFFFFF;--bd2:#FFFFFF;
+  background:#000!important;color:#fff!important
+}
+body.high-contrast header,
+body.high-contrast .left-panel,
+body.high-contrast .right-panel,
+body.high-contrast .theory-box,
+body.high-contrast .ctrl-card,
+body.high-contrast .step-explain,
+body.high-contrast .info-bar,
+body.high-contrast .shift-visual,
+body.high-contrast .step-arrows-visual,
+body.high-contrast .col-anim-wrap,
+body.high-contrast .sbox-grid,
+body.high-contrast .sbox-header,
+body.high-contrast .center-theory-card,
+body.high-contrast .cell-explain-panel,
+body.high-contrast .speech-bubble{
+  background:#000!important;color:#fff!important;border:3px solid #fff!important;box-shadow:none!important
+}
+body.high-contrast .mc,
+body.high-contrast .rkc,
+body.high-contrast .prevc,
+body.high-contrast .src,
+body.high-contrast .sbox-cell,
+body.high-contrast .cell-chip,
+body.high-contrast button,
+body.high-contrast input{
+  background:#000!important;color:#fff!important;border:3px solid #fff!important;box-shadow:none!important
+}
+body.high-contrast .active,
+body.high-contrast .selected-cell,
+body.high-contrast .selected-key,
+body.high-contrast .hi,
+body.high-contrast .sbox-cell.hi{
+  background:#FFEA00!important;color:#000!important;border-color:#00FFFF!important
+}
+
+
+/* S-BOX fit and fullscreen controls */
+.sbox-section{max-width:min(100%,900px)}
+.sbox-header{justify-content:space-between;align-items:center}
+.sbox-title-line{display:flex;align-items:center;gap:.35rem;min-width:0;flex-wrap:wrap}
+.sbox-header-actions{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.sbox-skip-btn{
+  display:none;border:0;border-radius:10px;padding:.34rem .6rem;background:linear-gradient(135deg,var(--or),var(--rd));color:#fff;
+  font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;cursor:pointer;box-shadow:0 3px 0 rgba(15,23,42,.12)
+}
+.sbox-skip-btn.show{display:inline-flex}
+.sbox-skip-btn:disabled{opacity:.45;cursor:default}
+.sbox-skip-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--glow-ac)}
+.sbox-full-btn{
+  width:34px;height:34px;border:1.5px solid var(--bd);border-radius:10px;background:#fff;color:var(--ac);
+  font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;cursor:pointer;flex-shrink:0
+}
+.sbox-full-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-ac)}
+.sbox-section .sbox-grid{grid-template-columns:34px repeat(16,minmax(24px,1fr));max-height:none;overflow:visible}
+.sbox-section .sbox-cell{min-height:22px}
+.sbox-section .sbox-val{font-size:.58rem}
+.sbox-section.fullscreen{
+  position:fixed;inset:14px;z-index:700;display:flex;max-width:none;width:auto;margin:0;padding:1rem;
+  background:var(--card-bg);border:2px solid var(--bd);border-radius:18px;box-shadow:0 24px 80px rgba(0,0,0,.35)
+}
+.sbox-section.fullscreen .sbox-grid{flex:1;align-content:stretch;grid-template-columns:42px repeat(16,minmax(34px,1fr));gap:4px;padding:10px}
+.sbox-section.fullscreen .sbox-cell{min-height:32px}
+.sbox-section.fullscreen .sbox-val{font-size:.72rem}
+body.sbox-fullscreen-open .center-panel{overflow:visible}
+[data-theme="dark"] .sbox-full-btn{background:#111827;color:var(--tx);border-color:var(--bd)}
+[data-theme="dark"] .sbox-skip-btn{background:linear-gradient(135deg,#c96010,#cc2828);color:#fff}
+body.high-contrast .sbox-full-btn{background:#000!important;color:#fff!important;border-color:#fff!important}
+@media(max-width:960px){
+  .sbox-section .sbox-grid{grid-template-columns:28px repeat(16,minmax(20px,1fr));gap:2px;padding:5px}
+  .sbox-section .sbox-cell{min-height:19px}
+  .sbox-section .sbox-val{font-size:.5rem}
+  .sbox-section.fullscreen{inset:8px;padding:.65rem}
+  .sbox-section.fullscreen .sbox-grid{grid-template-columns:30px repeat(16,minmax(20px,1fr));gap:2px}
+  .sbox-section.fullscreen .sbox-cell{min-height:24px}
+}
+/* ════ RESPONSIVE ════ */
+@media(max-width:960px){
+  .main-grid{grid-template-columns:1fr!important}
+  .right-panel{display:none}
+  .mascot-container{display:none}
+}
+
+/* ════ THEME TRANSITION ════ */
+body *{transition:background-color .3s,border-color .3s,color .2s,box-shadow .3s}
+
+/* Final visibility and fit fixes */
+:root{--matrix-cell:clamp(48px,4.1vw,62px);--matrix-gap:clamp(4px,.45vw,7px)}
+.matrix-area{width:100%;max-width:100%;gap:clamp(.45rem,1vw,.95rem);flex-wrap:nowrap;overflow:visible;justify-content:center}
+.matrix-wrap{min-width:0;flex:0 1 auto}
+.state-matrix,.rk-matrix,.prev-matrix{grid-template-columns:repeat(4,var(--matrix-cell))!important;gap:var(--matrix-gap)!important}
+.mc,.rkc,.prevc{width:var(--matrix-cell)!important;height:calc(var(--matrix-cell)*.83)!important;min-width:0;color:var(--tx)!important;font-weight:900!important;text-shadow:none!important}
+.prevc{color:var(--ac)!important;background:rgba(26,88,200,.08)!important}
+.rkc{color:var(--pu)!important;background:rgba(112,56,200,.08)!important}
+.rkc.hi,.mc.hi-rk{color:#3b0764!important;background:rgba(168,85,247,.24)!important;border-color:var(--pu)!important}
+.mc.hi-sub{color:#991b1b!important;background:rgba(248,113,113,.20)!important;border-color:var(--rd)!important}
+.mc.hi-row0,.mc.hi-row1,.mc.hi-row2,.mc.hi-row3,.mc.hi-col0,.mc.hi-col1,.mc.hi-col2,.mc.hi-col3{color:var(--tx)!important}
+.subbytes-guide-note{color:var(--tx)!important;background:rgba(240,245,255,.96)!important}
+.subbyte-step-card{color:#172033!important;background:#fff!important}
+.subbyte-byte{color:#1d4ed8!important;background:#eaf0ff!important}
+.subbyte-out{color:#047857!important;background:#dcfce7!important}
+.subbyte-lookup{color:#334155!important}
+.mix-byte,.mix-coef,.mix-result,.mix-formula{color:var(--tx)!important;background:rgba(255,255,255,.72)!important}
+.matrix-lbl{color:var(--tx2)!important;font-weight:900!important}
+[data-theme="dark"] .mc,[data-theme="dark"] .rkc,[data-theme="dark"] .prevc{background:#111827!important;color:#f8fafc!important;border-color:rgba(148,163,184,.34)!important}
+[data-theme="dark"] .prevc{color:#a5b4fc!important;background:rgba(99,102,241,.12)!important}
+[data-theme="dark"] .rkc{color:#e9d5ff!important;background:rgba(129,140,248,.12)!important}
+[data-theme="dark"] .prevc.hi,[data-theme="dark"] .rkc.hi,[data-theme="dark"] .mc.hi-rk,[data-theme="dark"] .mc.hi-sub{color:#fff!important}
+[data-theme="dark"] .subbytes-guide-note{color:#f8fafc!important;background:#1e293b!important;border-color:rgba(148,163,184,.35)!important}
+[data-theme="dark"] .subbyte-step-card{background:#111827!important;color:#f8fafc!important;border-color:rgba(148,163,184,.28)!important}
+[data-theme="dark"] .subbyte-byte{background:#eaf0ff!important;color:#1d4ed8!important}
+[data-theme="dark"] .subbyte-out{background:#dcfce7!important;color:#047857!important}
+[data-theme="dark"] .subbyte-lookup{color:#cbd5e1!important}
+[data-theme="dark"] .mix-byte,[data-theme="dark"] .mix-coef,[data-theme="dark"] .mix-result,[data-theme="dark"] .mix-formula{background:#111827!important;color:#f8fafc!important;border-color:rgba(148,163,184,.28)!important}
+[data-theme="dark"] .mix-formula.active{background:rgba(99,102,241,.24)!important;color:#fff!important}
+[data-theme="dark"] .matrix-lbl{color:#cbd5e1!important}
+@media(max-width:1280px){
+  :root{--matrix-cell:clamp(42px,3.8vw,54px);--matrix-gap:4px}
+  .matrix-area{gap:.45rem}
+  .op-sym{font-size:1.45rem}.op-sym-lbl{font-size:.5rem}
+  .matrix-lbl{font-size:.46rem;letter-spacing:.06em}
+}
+@media(max-width:960px){
+  .matrix-area{flex-wrap:wrap}
+  :root{--matrix-cell:56px;--matrix-gap:5px}
+}
+
+/* Hard fixes after screenshot review */
+:root{--matrix-cell:46px!important;--matrix-gap:4px!important}
+.center-panel{min-width:0!important;overflow-x:hidden!important}
+.matrix-area{width:100%!important;max-width:100%!important;box-sizing:border-box!important;gap:.35rem!important;justify-content:center!important;overflow:visible!important;padding:0 .15rem!important}
+.matrix-wrap{min-width:0!important;flex:0 1 auto!important;max-width:calc(4 * var(--matrix-cell) + 3 * var(--matrix-gap) + 8px)!important}
+.state-matrix,.rk-matrix,.prev-matrix{grid-template-columns:repeat(4,var(--matrix-cell))!important;gap:var(--matrix-gap)!important}
+.mc,.rkc,.prevc{width:var(--matrix-cell)!important;height:calc(var(--matrix-cell)*.82)!important;border-radius:12px!important;font-size:.82rem!important;border-width:2px!important;box-sizing:border-box!important}
+.op-sym-wrap{width:30px!important;min-width:30px!important;flex:0 0 30px!important}
+.op-sym{font-size:1.35rem!important}.op-sym-lbl{font-size:.48rem!important}
+.matrix-lbl{font-size:.44rem!important;letter-spacing:.045em!important;white-space:nowrap!important}
+.sbox-cell.row-line,.sbox-cell.col-line{background:#24345f!important;color:#f8fafc!important}
+.sbox-cell.row-line .sbox-val,.sbox-cell.col-line .sbox-val{color:#f8fafc!important;font-weight:900!important}
+.sbox-cell.hi{background:#facc15!important;border-color:#ff4d6d!important;color:#111827!important;box-shadow:0 0 0 2px rgba(250,204,21,.35)!important}
+.sbox-cell.hi .sbox-val{color:#111827!important;font-weight:900!important}
+[data-theme="dark"] .sbox-cell.row-line,[data-theme="dark"] .sbox-cell.col-line{background:#26376b!important;color:#f8fafc!important}
+[data-theme="dark"] .sbox-cell.row-line .sbox-val,[data-theme="dark"] .sbox-cell.col-line .sbox-val{color:#f8fafc!important}
+[data-theme="dark"] .sbox-cell.hi,[data-theme="dark"] .sbox-cell.hi .sbox-val{color:#111827!important}
+.subbyte-byte,.subbyte-out{color:#111827!important;text-shadow:none!important}
+.subbyte-byte{background:#dbeafe!important}.subbyte-out{background:#bbf7d0!important}
+[data-theme="dark"] .subbyte-byte,[data-theme="dark"] .subbyte-out{color:#111827!important;text-shadow:none!important}
+@media(min-width:1180px){
+  .main-grid{grid-template-columns:minmax(300px,340px) minmax(0,1fr) minmax(280px,320px)!important}
+}
+@media(min-width:1360px){
+  :root{--matrix-cell:50px!important;--matrix-gap:5px!important}
+  .op-sym-wrap{width:34px!important;min-width:34px!important;flex-basis:34px!important}
+}
+
+/* Right flowchart readability fix */
+.fc-item,.fc-item.passed{opacity:1!important}
+.fc-name{color:#2f2118!important;font-weight:900!important;text-shadow:none!important}
+.fc-sub{color:#6b4a35!important;font-weight:900!important;text-shadow:none!important}
+.fc-item{background:rgba(255,250,242,.34)!important;border-color:rgba(160,110,70,.16)!important}
+.fc-item.passed{background:rgba(255,250,242,.42)!important;border-color:rgba(160,110,70,.14)!important}
+.fc-item.active{background:rgba(112,56,200,.13)!important;border-color:rgba(112,56,200,.46)!important;box-shadow:inset 0 0 0 1px rgba(112,56,200,.12)!important}
+.fc-item.active .fc-name{color:#251510!important}
+.fc-item.active .fc-sub{color:#5d4939!important}
+.fc-dot{background:#8f7a66!important;opacity:1!important}
+.fc-item.passed .fc-dot{background:#1a9a52!important}
+.fc-item.active .fc-dot{background:#7038c8!important;box-shadow:0 0 10px rgba(112,56,200,.55)!important}
+[data-theme="dark"] .fc-item{background:rgba(15,23,42,.38)!important;border-color:rgba(148,163,184,.14)!important}
+[data-theme="dark"] .fc-item.passed{background:rgba(15,23,42,.46)!important}
+[data-theme="dark"] .fc-item.active{background:rgba(129,140,248,.18)!important;border-color:rgba(129,140,248,.50)!important}
+[data-theme="dark"] .fc-name,[data-theme="dark"] .fc-item.active .fc-name{color:#f8fafc!important}
+[data-theme="dark"] .fc-sub,[data-theme="dark"] .fc-item.active .fc-sub{color:#cbd5e1!important}
+
+/* ShiftRows visible values and final ASCII explanation */
+.shift-after-cell{font-weight:900!important;text-shadow:none!important;background:rgba(255,255,255,.78)!important}
+[data-theme="dark"] .shift-after-cell{background:#111827!important;color:#f8fafc!important}
+.ascii-panel{display:none;width:100%;max-width:900px;margin:.4rem 0 .65rem;padding:.8rem 1rem;background:var(--card-bg);border:1.5px solid var(--bd);border-radius:16px;box-shadow:var(--shadow);flex-shrink:0}
+.ascii-panel.show{display:block}
+.ascii-title{font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--tx);margin-bottom:.35rem}
+.ascii-note{font-size:.78rem;font-weight:800;line-height:1.45;color:var(--tx2);margin-bottom:.55rem}
+.ascii-table-wrap{overflow-x:auto}
+.ascii-table{width:100%;border-collapse:separate;border-spacing:0 4px;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.ascii-table th{color:var(--ac);font-weight:900;text-align:left;padding:.3rem .45rem}
+.ascii-table td{background:rgba(255,255,255,.74);color:var(--tx);font-weight:900;padding:.36rem .45rem;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.ascii-table td:first-child{border-left:1px solid var(--bd);border-radius:8px 0 0 8px;color:var(--ac)}
+.ascii-table td:last-child{border-right:1px solid var(--bd);border-radius:0 8px 8px 0;color:var(--gr)}
+[data-theme="dark"] .ascii-panel{background:linear-gradient(180deg,rgba(30,41,59,.92),rgba(15,23,42,.88));border-color:rgba(148,163,184,.18)}
+[data-theme="dark"] .ascii-table td{background:#111827;color:#f8fafc;border-color:rgba(148,163,184,.22)}
+[data-theme="dark"] .ascii-note{color:#cbd5e1}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div id="soundIndicator" class="sound-indicator">🔊 звук</div>
+
+<!-- ═══ APP SHELL ═══ -->
+<div class="app-shell">
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="h-logo">
+    <div class="h-logo-emoji">🔐</div>
+    AES<span style="color:var(--tx2)">·</span><span style="color:var(--pu)">256</span>
+  </div>
+  <div class="h-badge">ДЕШИФРОВЩИК · TOPIC 2</div>
+  <div class="h-key-row">
+    <span class="h-key-lbl">КЛЮЧ:</span>
+    <span class="h-key-val" id="hKeyVal">—</span>
+  </div>
+  <button class="h-btn" onclick="generateNewKey()">↺ Новый ключ</button>
+  <button class="h-btn" id="themeBtn" onclick="toggleTheme()">🌙 Тема</button>
+  <button class="h-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
+  <div class="lang-switch" id="langSwitch" aria-label="Language">
+    <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" data-lang="kz" onclick="setLang('kz')">KZ</button>
+  </div>
+  <div style="position:relative;flex-shrink:0">
+    <button class="a11y-btn" id="a11yBtn" onclick="toggleA11y()" title="Для слабовидящих">👁</button>
+    <div class="a11y-panel" id="a11yPanel">
+      <div class="a11y-panel-title">♿ Доступность</div>
+      <div class="a11y-row">
+        <label>Крупный текст</label>
+        <div class="a11y-toggle" id="a11yText" onclick="toggleLargeText()"></div>
+      </div>
+      <div class="a11y-row">
+        <label>Высокий контраст</label>
+        <div class="a11y-toggle" id="a11yContrast" onclick="toggleContrast()"></div>
+      </div>
+      <div class="a11y-row">
+        <label>Замедлить анимации</label>
+        <div class="a11y-toggle" id="a11ySlowAnim" onclick="toggleSlowAnim()"></div>
+      </div>
+      <div class="a11y-sep"></div>
+      <div class="a11y-row">
+        <label>Размер шрифта</label>
+        <div class="a11y-size">
+          <button onclick="setFontSize(13)">А-</button>
+          <button class="active" onclick="setFontSize(14)">А</button>
+          <button onclick="setFontSize(17)">А+</button>
+          <button onclick="setFontSize(20)">А++</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-status idle" id="hStatus">ОЖИДАНИЕ</div>
+</header>
+
+<!-- ═══ MAIN GRID ═══ -->
+<div class="main-grid">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+    <div class="theory-box" id="theoryBox">
+      <div class="theory-tag">ТЕОРИЯ ТЕКУЩЕГО ШАГА</div>
+      <div class="theory-op" id="theoryOp">AES-256 — Добро пожаловать!</div>
+      <div class="theory-desc" id="theoryDesc">Введите открытый текст (до 16 символов), нажмите <strong style="color:var(--ac)">Зашифровать</strong> — затем изучите дешифрование пошагово с анимациями каждого шага.</div>
+      <div class="theory-formula" id="theoryFormula">keyLen = 256 бит | rounds = 14 | roundKeys = 15</div>
+    </div>
+    <div class="controls">
+      <div class="ctrl-card">
+        <label class="ctrl-lbl">📝 ОТКРЫТЫЙ ТЕКСТ (макс. 16 байт)</label>
+        <input id="ptIn" class="txt-in" placeholder="Hello, AES-256!" maxlength="16"
+               oninput="onPtInput()" value="Hello, AES-256!">
+        <div class="err-msg" id="errMsg">⚠ Максимум 128 бит (16 байт)</div>
+        <div class="byte-counter ok" id="byteCounter">
+          Байт: <span id="byteCount">15</span>/16 · <span id="bitCount">120</span>/128 бит
+        </div>
+      </div>
+      <div class="ctrl-card">
+        <label class="ctrl-lbl">🔑 СЕКРЕТНЫЙ КЛЮЧ — 256 БИТ</label>
+        <div class="key-display" id="keyDisplay">—</div>
+        <button class="action-btn btn-reset" style="margin-top:.35rem;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;padding:.38rem" onclick="generateNewKey()">↺ Сгенерировать новый ключ</button>
+      </div>
+      <div class="ctrl-card">
+        <button class="action-btn btn-enc" id="btnEnc" onclick="doEncrypt()">🔐 ЗАШИФРОВАТЬ</button>
+        <button class="action-btn btn-dec hidden" id="btnDec" onclick="startDecryptTutorial()">📖 ИЗУЧИТЬ ДЕШИФРОВАНИЕ →</button>
+        <button class="action-btn btn-reset hidden" id="btnReset" onclick="resetAll()" style="margin-top:.35rem;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;padding:.42rem">✕ Сбросить</button>
+      </div>
+      <div class="ctrl-card hidden" id="encResultBox">
+        <div class="result-lbl">🔒 ШИФРТЕКСТ (HEX):</div>
+        <div class="result-val" id="encResultVal">—</div>
+      </div>
+      <div class="ctrl-card hidden" id="decResultBox">
+        <div class="result-lbl">✅ РАСШИФРОВАННЫЙ ТЕКСТ:</div>
+        <div class="result-val" id="decResultHex" style="margin-bottom:.3rem">—</div>
+        <div class="result-lbl" style="margin-top:.35rem">ASCII:</div>
+        <div class="result-val" id="decResultAscii" style="font-size:.92rem;color:var(--ac)">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CENTER PANEL ══ -->
+  <div class="center-panel" id="centerPanel">
+
+    <!-- Idle -->
+    <div class="center-idle" id="idleView">
+      <div class="ci-glyph">🛡️</div>
+      <div class="ci-title">AES-256 Тренажёр</div>
+      <div class="ci-sub">Изучи военный стандарт шифрования пошагово с интерактивными анимациями!</div>
+      <div class="ci-steps">
+        <div class="ci-step"><div class="ci-step-num">1</div>Введи текст слева (до 16 символов)</div>
+        <div class="ci-step"><div class="ci-step-num">2</div>Нажми "Зашифровать" 🔐</div>
+        <div class="ci-step"><div class="ci-step-num">3</div>Изучи каждый шаг дешифрования!</div>
+      </div>
+    </div>
+
+    <!-- After encryption -->
+    <div class="enc-result-center hidden" id="encView">
+      <div class="enc-label">📝 ОТКРЫТЫЙ ТЕКСТ</div>
+      <div class="enc-hex plain" id="ptHexView">—</div>
+      <div class="enc-arrow">↓ AES-256 (14 раундов) ↓</div>
+      <div class="enc-label">🔒 ШИФРТЕКСТ</div>
+      <div class="enc-hex cipher" id="ctHexView">—</div>
+      <button class="action-btn btn-dec" style="max-width:360px;margin-top:.6rem" onclick="startDecryptTutorial()">
+        📖 Изучить дешифрование пошагово →
+      </button>
+    </div>
+
+    <!-- Tutorial view -->
+    <div id="tutView">
+      <div class="step-banner" id="stepBanner">
+        <span class="step-op-name" id="stepOpName">—</span>
+        <span class="step-badge badge-idle" id="stepRoundBadge">—</span>
+      </div>
+
+      <div class="center-theory-card" id="centerTheoryCard">
+        <div class="center-theory-tag">Теория текущего этапа</div>
+        <div class="center-theory-title" id="centerTheoryOp">—</div>
+        <div class="center-theory-desc" id="centerTheoryDesc">—</div>
+        <div class="center-theory-formula" id="centerTheoryFormula">—</div>
+      </div>
+
+      <div class="aes-diagram" id="aesDiagram"></div>
+
+      <div class="prog-wrap">
+        <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="prog-info">
+          <span class="prog-pct" id="progPct">0%</span>
+          <span class="prog-pct" id="navCtr">0 / 0</span>
+        </div>
+      </div>
+
+      <!-- Step explanation with numbered arrows -->
+      <div class="step-explain" id="stepExplain">
+        <div class="explain-title" id="explainTitle">📋 Что происходит?</div>
+        <div class="explain-steps" id="explainSteps"></div>
+      </div>
+
+      <!-- Column animation for IMC -->
+      <div class="col-anim-wrap" id="colAnimWrap">
+        <div class="col-anim-title">🔢 Пошаговое умножение столбцов в GF(2⁸)</div>
+        <div class="col-anim-cols" id="colAnimCols"></div>
+      </div>
+
+      <!-- ShiftRows visual with arrows -->
+      <div class="shift-visual" id="shiftVisual"></div>
+
+      <!-- SubBytes arrow visual -->
+      <div class="step-arrows-visual" id="stepArrowsVisual">
+        <div class="arrows-title">SubBytes: пошаговая замена всех 16 ячеек</div>
+        <div id="arrowsContent"></div>
+      </div>
+
+      <!-- Matrix area -->
+      <div class="matrix-area" id="matrixArea">
+        <div class="matrix-wrap" id="prevWrap" style="display:none">
+          <div class="matrix-lbl" id="prevLbl">МАТРИЦА ДО XOR</div>
+          <div class="prev-matrix" id="prevMat"></div>
+        </div>
+        <div class="matrix-wrap">
+          <div class="matrix-lbl">МАТРИЦА СОСТОЯНИЯ (4×4)</div>
+          <div class="state-matrix" id="stateMat"></div>
+        </div>
+        <div class="op-sym-wrap" id="opSymWrap" style="display:none">
+          <div class="op-sym" id="opSym">⊕</div>
+          <div class="op-sym-lbl" id="opSymLbl">XOR</div>
+        </div>
+        <div class="matrix-wrap" id="rkWrap" style="display:none">
+          <div class="matrix-lbl" id="rkLbl">КЛЮЧ РАУНДА</div>
+          <div class="rk-matrix" id="rkMat"></div>
+        </div>
+      </div>
+
+      <div class="cell-explain-panel" id="cellExplainPanel">
+        <div class="cell-explain-title" id="cellExplainTitle">Выберите ячейку матрицы</div>
+        <div class="cell-explain-body" id="cellExplainBody">Нажмите на любой кубик State, чтобы увидеть происхождение значения.</div>
+      </div>
+
+      <div class="ascii-panel" id="asciiPanel">
+        <div class="ascii-title">Финальный разбор plaintext через ASCII</div>
+        <div class="ascii-note">AES читает финальную матрицу по столбцам: plaintext[c*4+r] = State[r][c]. Затем каждый байт переводится из HEX в DEC и ASCII.</div>
+        <div class="ascii-table-wrap" id="asciiTableWrap"></div>
+      </div>
+
+      <!-- SBox section -->
+      <div class="sbox-section" id="sboxSection">
+        <div class="sbox-header"><div class="sbox-title-line">🔴 <span data-i18n="sboxTitle">INV S-BOX таблица</span> — <span data-i18n="sboxHint">подсвечен текущий байт</span></div><div class="sbox-header-actions"><button class="sbox-skip-btn" id="sboxSkipBtn" type="button" onclick="skipSubBytesAnimation()">Пропустить анимацию</button><button class="sbox-full-btn" id="sboxFullBtn" type="button" onclick="toggleSboxFullscreen()" title="Полноэкранный режим">⛶</button></div></div>
+        <div class="sbox-grid" id="sboxGrid"></div>
+      </div>
+
+      <!-- Info bar -->
+      <div class="info-bar" id="xorEq">
+        <span class="eq-info">Нажимайте ← → для навигации по шагам</span>
+      </div>
+
+      <!-- Speed & Nav -->
+      <div class="speed-row">
+        <span class="speed-lbl">⚡ Скорость:</span>
+        <button class="speed-btn" onclick="setSpeed(2)">0.5×</button>
+        <button class="speed-btn active" onclick="setSpeed(1)">1×</button>
+        <button class="speed-btn" onclick="setSpeed(0.5)">2×</button>
+        <button class="speed-btn" onclick="setSpeed(0.25)">4×</button>
+      </div>
+      <div class="step-nav">
+        <button class="nav-btn" id="navPrev" onclick="prevStep()" disabled>◀ НАЗАД</button>
+        <div class="nav-center">
+          <div class="nav-kb">← → клавиатура</div>
+        </div>
+        <button class="nav-btn" id="navNext" onclick="nextStep()" disabled>ДАЛЕЕ ▶</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+    <div class="rp-hdr"><div class="rp-hdr-dot"></div> ЭТАПЫ ДЕШИФРОВАНИЯ AES-256</div>
+    <div class="flowchart-wrap" id="fcWrap">
+      <div style="padding:2rem;text-align:center;opacity:.45;font-family:'Nunito',sans-serif;font-weight:700;font-size:.7rem;color:var(--tx3);line-height:2">
+        🔒 Начните дешифрование<br>чтобы увидеть прогресс
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main-grid -->
+</div><!-- end app-shell -->
+
+<!-- ═══ MASCOT ═══ -->
+<div class="mascot-container">
+  <div class="mascot-body collapsed" id="mascotBody">
+    <div class="speech-bubble" id="mascotBubble" onclick="toggleMascot()">
+      <div class="sb-txt" id="mascotTxt">👋 Привет! Я Окто — твой помощник по AES-256!</div>
+    </div>
+    <svg class="mascot-svg-wrap" viewBox="0 0 90 108" xmlns="http://www.w3.org/2000/svg" onclick="toggleMascot()" id="mascotSvg">
+      <defs>
+        <radialGradient id="mBg1" cx="38%" cy="30%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient>
+        <radialGradient id="mBg2" cx="50%" cy="50%"><stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#7c3aed"/></radialGradient>
+      </defs>
+      <ellipse cx="45" cy="22" rx="26" ry="20" fill="url(#mBg1)"/>
+      <ellipse cx="45" cy="44" rx="32" ry="28" fill="url(#mBg2)"/>
+      <circle cx="34" cy="40" r="9" fill="#f0e6ff"/><circle cx="56" cy="40" r="9" fill="#f0e6ff"/>
+      <circle cx="35" cy="41" r="5" fill="#1a0040"/><circle cx="57" cy="41" r="5" fill="#1a0040"/>
+      <circle cx="33" cy="38.5" r="2" fill="white"/><circle cx="55" cy="38.5" r="2" fill="white"/>
+      <ellipse cx="24" cy="50" rx="5.5" ry="3.5" fill="rgba(236,72,153,.38)"/>
+      <ellipse cx="66" cy="50" rx="5.5" ry="3.5" fill="rgba(236,72,153,.38)"/>
+      <path d="M 37 54 Q 45 61 53 54" stroke="#c4b5fd" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M 16 66 C 11 76 14 87 10 97" stroke="#6d28d9" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+      <path d="M 25 70 C 22 80 27 90 22 100" stroke="#7c3aed" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 34 72 C 33 82 36 92 32 102" stroke="#6d28d9" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 45 73 C 45 83 46 93 44 104" stroke="#7c3aed" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 56 72 C 58 82 55 92 59 102" stroke="#6d28d9" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 65 70 C 69 80 66 90 71 100" stroke="#7c3aed" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 74 66 C 80 76 79 87 84 97" stroke="#6d28d9" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+      <line x1="45" y1="4" x2="45" y2="14" stroke="#a78bfa" stroke-width="1.5"/>
+      <circle cx="45" cy="3" r="3" fill="#00e5ff" opacity=".85"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ HELP BUTTON ═══ -->
+<button class="help-btn" onclick="toggleHelp()" title="Справка">🐙</button>
+<div class="help-popup" id="helpPopup">
+  <h4>🐙 Окто говорит:</h4>
+  <p>
+    <kbd>←</kbd> <kbd>→</kbd> — шаги<br>
+    Нажми на шаг справа — прыжок<br>
+    Нажми на блок в диаграмме<br>
+    🔊 Звуки разные для каждой операции!<br>
+    👁 Для слабовидящих — кнопка сверху
+  </p>
+</div>
+
+<script>
+// ════ ANIMATED BACKGROUND ════
+(function(){
+  const canvas=document.getElementById('bgCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const DARK_COLORS =['56,232,255','192,132,252','74,222,128','244,114,182'];
+  const LIGHT_COLORS=['25,90,210', '110,30,190','10,130,70', '190,30,120'];
+  for(let i=0;i<55;i++){
+    particles.push({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+      r:Math.random()*1.6+.5,alpha:Math.random()*.45+.1,
+      colorIdx:Math.floor(Math.random()*4),
+      hex:Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase(),
+      hexTimer:0,hexInterval:Math.random()*200+100,
+      size:Math.random()*8+5,isHex:Math.random()>.65
+    });
+  }
+  let t=0;
+  function draw(){
+    const isLightTheme=document.documentElement.getAttribute('data-theme')==='light';
+    const palette=isLightTheme?LIGHT_COLORS:DARK_COLORS;
+    const lineAlphaMult=isLightTheme?0.22:0.08;
+    const dotAlphaMult =isLightTheme?1.5:1;
+    ctx.clearRect(0,0,W,H);t++;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<90){ctx.strokeStyle=`rgba(${palette[particles[i].colorIdx]},${lineAlphaMult*(1-d/90)})`;ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();}
+      }
+    }
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      p.hexTimer++;
+      if(p.hexTimer>p.hexInterval){p.hex=Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase();p.hexTimer=0;}
+      const c=palette[p.colorIdx];
+      const a=Math.min(1,p.alpha*dotAlphaMult);
+      if(p.isHex){ctx.font=`${p.size}px 'JetBrains Mono',monospace`;ctx.fillStyle=`rgba(${c},${a*.8})`;ctx.fillText(p.hex,p.x,p.y);}
+      else{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${c},${a})`;ctx.fill();}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ════ SOUND ENGINE ════
+let soundEnabled=true,audioCtx=null;
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(freq,dur,type='sine',gain=0.07){
+  if(!soundEnabled)return;
+  try{
+    const ctx=getAudio();const osc=ctx.createOscillator();const g=ctx.createGain();
+    osc.connect(g);g.connect(ctx.destination);
+    osc.type=type;osc.frequency.value=freq;
+    g.gain.setValueAtTime(0,ctx.currentTime);
+    g.gain.linearRampToValueAtTime(gain,ctx.currentTime+.01);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+dur+.05);
+    showSoundIndicator();
+  }catch(e){}
+}
+function playSoundARK(){playTone(440,.12,'sine',.06);setTimeout(()=>playTone(550,.12,'sine',.05),60);}
+function playSoundISR(){[200,260,320,380].forEach((f,i)=>setTimeout(()=>playTone(f,.1,'sawtooth',.04),i*75));}
+function playSoundISB(){playTone(880,.08,'square',.04);setTimeout(()=>playTone(660,.08,'square',.04),50);}
+function playSoundIMC(){playTone(120,.35,'sine',.07);setTimeout(()=>playTone(180,.2,'sine',.05),160);}
+function playSoundDone(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.28,'sine',.07),i*120));}
+function playSoundVictory(){
+  // Торжественный фанфар победы — три волны нот
+  [330,392,494,659,784].forEach((f,i)=>setTimeout(()=>playTone(f,.25,'sine',.08),i*80));
+  setTimeout(()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.22,'triangle',.07),i*60));},500);
+  setTimeout(()=>{
+    playTone(1047,.55,'sine',.10);
+    setTimeout(()=>playTone(1319,.55,'sine',.09),120);
+    setTimeout(()=>playTone(1568,.8,'sine',.08),260);
+  },820);
+}
+function playSoundInit(){playTone(220,.3,'sine',.06);setTimeout(()=>playTone(330,.25,'sine',.05),180);}
+function playStepSound(op){
+  if(!soundEnabled)return;
+  if(op==='ARK')playSoundARK();
+  else if(op==='ISR')playSoundISR();
+  else if(op==='ISB')playSoundISB();
+  else if(op==='IMC')playSoundIMC();
+  else if(op==='DONE')playSoundVictory();
+  else if(op==='INIT')playSoundInit();
+  else playSoundNav();
+}
+function playSoundNav(){playTone(620,.07,'sine',.025);}
+function playSoundEnc(){[330,392,494,659].forEach((f,i)=>setTimeout(()=>playTone(f,.18,'sine',.06),i*100));}
+function playSoundArrow(){[740,880,1040].forEach((f,i)=>setTimeout(()=>playTone(f,.055,'triangle',.025),i*42));}
+function playSoundCell(){playTone(980,.045,'square',.018);}
+function showSoundIndicator(){
+  const el=document.getElementById('soundIndicator');el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),600);
+}
+function toggleSound(){soundEnabled=!soundEnabled;document.getElementById('soundBtn').textContent=soundEnabled?'🔊':'🔇';}
+
+// ════ THEME & ACCESSIBILITY ════
+let isDark=true;
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  const pack=LANG_PACK[currentLang]||LANG_PACK.ru;
+  document.getElementById('themeBtn').textContent=isDark?pack.themeDark:pack.themeLight;
+}
+function toggleA11y(){document.getElementById('a11yPanel').classList.toggle('open');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#a11yBtn')&&!e.target.closest('#a11yPanel'))
+    document.getElementById('a11yPanel').classList.remove('open');
+  if(!e.target.closest('.help-btn')&&!e.target.closest('#helpPopup'))
+    document.getElementById('helpPopup').classList.remove('show');
+});
+function toggleLargeText(){
+  const t=document.getElementById('a11yText');t.classList.toggle('on');
+  document.body.classList.toggle('large-text');
+  if(t.classList.contains('on')&&!document.body.classList.contains('a11y-xl')&&!document.body.classList.contains('a11y-xxl'))setFontSize(17);
+  if(!t.classList.contains('on'))setFontSize(14);
+}
+function toggleContrast(){
+  const t=document.getElementById('a11yContrast');t.classList.toggle('on');
+  document.body.classList.toggle('high-contrast');
+  document.documentElement.classList.toggle('high-contrast',document.body.classList.contains('high-contrast'));
+}
+let animSpeedMult=1;
+function toggleSlowAnim(){
+  const t=document.getElementById('a11ySlowAnim');t.classList.toggle('on');
+  animSpeedMult=t.classList.contains('on')?2.5:1;
+}
+function setFontSize(sz){
+  const scale=sz<=13?.92:sz<=14?1:sz<=17?1.18:sz<=20?1.35:1.58;
+  document.documentElement.style.setProperty('--font-scale',scale);
+  document.body.style.fontSize=`calc(15px * ${scale})`;
+  document.body.classList.toggle('large-text',sz>=17);
+  document.body.classList.toggle('a11y-xl',sz>=20&&sz<24);
+  document.body.classList.toggle('a11y-xxl',sz>=24);
+  const textToggle=document.getElementById('a11yText');
+  if(textToggle)textToggle.classList.toggle('on',sz>=17);
+  document.querySelectorAll('.a11y-size button').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('data-size')===String(sz)||b.onclick.toString().includes('('+sz+')'));
+  });
+  return;
+  document.body.style.fontSize=sz+'px';
+  document.querySelectorAll('.a11y-size button').forEach(b=>{
+    b.classList.toggle('active',b.textContent.includes('А')&&b.onclick.toString().includes('('+sz+')'));
+  });
+}
+function toggleHelp(){document.getElementById('helpPopup').classList.toggle('show');}
+
+// ════ AES TABLES ════
+const SBOX=[0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15,0x04,0xc7,0x23,0xc3,0x18,0x96,0x05,0x9a,0x07,0x12,0x80,0xe2,0xeb,0x27,0xb2,0x75,0x09,0x83,0x2c,0x1a,0x1b,0x6e,0x5a,0xa0,0x52,0x3b,0xd6,0xb3,0x29,0xe3,0x2f,0x84,0x53,0xd1,0x00,0xed,0x20,0xfc,0xb1,0x5b,0x6a,0xcb,0xbe,0x39,0x4a,0x4c,0x58,0xcf,0xd0,0xef,0xaa,0xfb,0x43,0x4d,0x33,0x85,0x45,0xf9,0x02,0x7f,0x50,0x3c,0x9f,0xa8,0x51,0xa3,0x40,0x8f,0x92,0x9d,0x38,0xf5,0xbc,0xb6,0xda,0x21,0x10,0xff,0xf3,0xd2,0xcd,0x0c,0x13,0xec,0x5f,0x97,0x44,0x17,0xc4,0xa7,0x7e,0x3d,0x64,0x5d,0x19,0x73,0x60,0x81,0x4f,0xdc,0x22,0x2a,0x90,0x88,0x46,0xee,0xb8,0x14,0xde,0x5e,0x0b,0xdb,0xe0,0x32,0x3a,0x0a,0x49,0x06,0x24,0x5c,0xc2,0xd3,0xac,0x62,0x91,0x95,0xe4,0x79,0xe7,0xc8,0x37,0x6d,0x8d,0xd5,0x4e,0xa9,0x6c,0x56,0xf4,0xea,0x65,0x7a,0xae,0x08,0xba,0x78,0x25,0x2e,0x1c,0xa6,0xb4,0xc6,0xe8,0xdd,0x74,0x1f,0x4b,0xbd,0x8b,0x8a,0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e,0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16];
+const INV_SBOX=[0x52,0x09,0x6a,0xd5,0x30,0x36,0xa5,0x38,0xbf,0x40,0xa3,0x9e,0x81,0xf3,0xd7,0xfb,0x7c,0xe3,0x39,0x82,0x9b,0x2f,0xff,0x87,0x34,0x8e,0x43,0x44,0xc4,0xde,0xe9,0xcb,0x54,0x7b,0x94,0x32,0xa6,0xc2,0x23,0x3d,0xee,0x4c,0x95,0x0b,0x42,0xfa,0xc3,0x4e,0x08,0x2e,0xa1,0x66,0x28,0xd9,0x24,0xb2,0x76,0x5b,0xa2,0x49,0x6d,0x8b,0xd1,0x25,0x72,0xf8,0xf6,0x64,0x86,0x68,0x98,0x16,0xd4,0xa4,0x5c,0xcc,0x5d,0x65,0xb6,0x92,0x6c,0x70,0x48,0x50,0xfd,0xed,0xb9,0xda,0x5e,0x15,0x46,0x57,0xa7,0x8d,0x9d,0x84,0x90,0xd8,0xab,0x00,0x8c,0xbc,0xd3,0x0a,0xf7,0xe4,0x58,0x05,0xb8,0xb3,0x45,0x06,0xd0,0x2c,0x1e,0x8f,0xca,0x3f,0x0f,0x02,0xc1,0xaf,0xbd,0x03,0x01,0x13,0x8a,0x6b,0x3a,0x91,0x11,0x41,0x4f,0x67,0xdc,0xea,0x97,0xf2,0xcf,0xce,0xf0,0xb4,0xe6,0x73,0x96,0xac,0x74,0x22,0xe7,0xad,0x35,0x85,0xe2,0xf9,0x37,0xe8,0x1c,0x75,0xdf,0x6e,0x47,0xf1,0x1a,0x71,0x1d,0x29,0xc5,0x89,0x6f,0xb7,0x62,0x0e,0xaa,0x18,0xbe,0x1b,0xfc,0x56,0x3e,0x4b,0xc6,0xd2,0x79,0x20,0x9a,0xdb,0xc0,0xfe,0x78,0xcd,0x5a,0xf4,0x1f,0xdd,0xa8,0x33,0x88,0x07,0xc7,0x31,0xb1,0x12,0x10,0x59,0x27,0x80,0xec,0x5f,0x60,0x51,0x7f,0xa9,0x19,0xb5,0x4a,0x0d,0x2d,0xe5,0x7a,0x9f,0x93,0xc9,0x9c,0xef,0xa0,0xe0,0x3b,0x4d,0xae,0x2a,0xf5,0xb0,0xc8,0xeb,0xbb,0x3c,0x83,0x53,0x99,0x61,0x17,0x2b,0x04,0x7e,0xba,0x77,0xd6,0x26,0xe1,0x69,0x14,0x63,0x55,0x21,0x0c,0x7d];
+const RCON=[0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36];
+
+// ════ HELPERS ════
+const h=v=>v.toString(16).padStart(2,'0').toUpperCase();
+const rand=()=>Math.floor(Math.random()*256);
+const b2hex=b=>b.map(v=>h(v)).join('');
+const clone=s=>s.map(r=>[...r]);
+function b2state(b){const s=[[],[],[],[]];for(let c=0;c<4;c++)for(let r=0;r<4;r++)s[r][c]=b[c*4+r];return s;}
+function state2b(s){const b=[];for(let c=0;c<4;c++)for(let r=0;r<4;r++)b.push(s[r][c]);return b;}
+function gm(a,b){let p=0;for(let i=0;i<8;i++){if(b&1)p^=a;const hi=a&0x80;a=(a<<1)&0xFF;if(hi)a^=0x1b;b>>=1;}return p;}
+
+// ════ KEY EXPANSION ════
+function keyExpand256(kb){
+  const w=[];for(let i=0;i<8;i++)w.push([kb[4*i],kb[4*i+1],kb[4*i+2],kb[4*i+3]]);
+  for(let i=8;i<60;i++){
+    let t=[...w[i-1]];
+    if(i%8===0){t=[t[1],t[2],t[3],t[0]];t=t.map(b=>SBOX[b]);t[0]^=RCON[i/8-1];}
+    else if(i%8===4){t=t.map(b=>SBOX[b]);}
+    w.push(w[i-8].map((b,j)=>b^t[j]));
+  }
+  const rks=[];for(let r=0;r<15;r++){const rk=[];for(let c=0;c<4;c++)rk.push(...w[r*4+c]);rks.push(rk);}
+  return{rks};
+}
+
+// ════ AES OPERATIONS ════
+function addRK(s,rk){return s.map((row,r)=>row.map((v,c)=>v^rk[c*4+r]));}
+function subBytes(s){return s.map(row=>row.map(b=>SBOX[b]));}
+function shiftRows(s){return[[s[0][0],s[0][1],s[0][2],s[0][3]],[s[1][1],s[1][2],s[1][3],s[1][0]],[s[2][2],s[2][3],s[2][0],s[2][1]],[s[3][3],s[3][0],s[3][1],s[3][2]]];}
+function mixCols(s){const o=[[],[],[],[]];for(let c=0;c<4;c++){const[s0,s1,s2,s3]=[s[0][c],s[1][c],s[2][c],s[3][c]];o[0][c]=(gm(2,s0)^gm(3,s1)^s2^s3)&0xFF;o[1][c]=(s0^gm(2,s1)^gm(3,s2)^s3)&0xFF;o[2][c]=(s0^s1^gm(2,s2)^gm(3,s3))&0xFF;o[3][c]=(gm(3,s0)^s1^s2^gm(2,s3))&0xFF;}return o;}
+function invSubBytes(s){return s.map(row=>row.map(b=>INV_SBOX[b]));}
+function invShiftRows(s){return[[s[0][0],s[0][1],s[0][2],s[0][3]],[s[1][3],s[1][0],s[1][1],s[1][2]],[s[2][2],s[2][3],s[2][0],s[2][1]],[s[3][1],s[3][2],s[3][3],s[3][0]]];}
+function invMixCols(s){const o=[[],[],[],[]];for(let c=0;c<4;c++){const[s0,s1,s2,s3]=[s[0][c],s[1][c],s[2][c],s[3][c]];o[0][c]=(gm(0x0e,s0)^gm(0x0b,s1)^gm(0x0d,s2)^gm(0x09,s3))&0xFF;o[1][c]=(gm(0x09,s0)^gm(0x0e,s1)^gm(0x0b,s2)^gm(0x0d,s3))&0xFF;o[2][c]=(gm(0x0d,s0)^gm(0x09,s1)^gm(0x0e,s2)^gm(0x0b,s3))&0xFF;o[3][c]=(gm(0x0b,s0)^gm(0x0d,s1)^gm(0x09,s2)^gm(0x0e,s3))&0xFF;}return o;}
+function aesEncrypt256(plain16,key32){const{rks}=keyExpand256(key32);let s=b2state(plain16);s=addRK(s,rks[0]);for(let rnd=1;rnd<=13;rnd++){s=subBytes(s);s=shiftRows(s);s=mixCols(s);s=addRK(s,rks[rnd]);}s=subBytes(s);s=shiftRows(s);s=addRK(s,rks[14]);return state2b(s);}
+
+// ════ RECORD DECRYPT STEPS ════
+function recordDecryptSteps(cipher16,key32){
+  const{rks}=keyExpand256(key32);const steps=[];
+  const push=(name,op,s,rk,rkIdx,round,dn)=>steps.push({name,op,state:clone(s),rk:rk?[...rk]:null,rkIdx,round,dn});
+  let s=b2state(cipher16);
+  push('Шифртекст — Начало','INIT',s,null,null,null,null);
+  s=addRK(s,rks[14]);push('AddRoundKey','ARK',s,rks[14],14,'initial',0);
+  for(let rnd=13;rnd>=1;rnd--){
+    const dn=14-rnd;
+    s=invShiftRows(s);push('InvShiftRows','ISR',s,null,null,rnd,dn);
+    s=invSubBytes(s);push('InvSubBytes','ISB',s,null,null,rnd,dn);
+    s=addRK(s,rks[rnd]);push(`AddRoundKey (RK${rnd})`,'ARK',s,rks[rnd],rnd,rnd,dn);
+    s=invMixCols(s);push('InvMixColumns','IMC',s,null,null,rnd,dn);
+  }
+  s=invShiftRows(s);push('InvShiftRows (Финал)','ISR',s,null,null,0,14);
+  s=invSubBytes(s);push('InvSubBytes (Финал)','ISB',s,null,null,0,14);
+  s=addRK(s,rks[0]);push('AddRoundKey (RK0)','ARK',s,rks[0],0,0,14);
+  push('✓ Открытый текст!','DONE',s,null,null,null,null);
+  return steps;
+}
+
+// ════ THEORY DATA ════
+const THEORY={
+  IDLE:{op:'🛡️ AES-256 Учебная платформа',desc:'Введите открытый текст (до 16 символов = 128 бит), нажмите Зашифровать — затем изучите дешифрование пошагово.',formula:'keyLen=256 бит | rounds=14 | roundKeys=15'},
+  ENC:{op:'✅ Шифрование завершено',desc:'AES-256 зашифровал ваш текст за 14 раундов. Теперь вы можете изучить процесс дешифрования пошагово.',formula:'C = AES_Encrypt(P, K) — 14 раундов преобразований'},
+  INIT:{op:'📥 Загрузка шифртекста в State',desc:'16 байт шифртекста загружаются в матрицу состояния 4×4 <strong>по столбцам</strong>. state[row][col] = cipher[col×4 + row].',formula:'state[r][c] = cipher[c·4 + r] — порядок: по столбцам'},
+  ARK:{op:'⊕ AddRoundKey — XOR с ключом раунда',desc:'Каждый байт матрицы XOR-ится (⊕) с соответствующим байтом ключа раунда. XOR обратима: A ⊕ K = C → C ⊕ K = A.',formula:'state[r][c] = state[r][c] ⊕ roundKey[c·4 + r]'},
+  ISR:{op:'↔️ InvShiftRows — сдвиг ВПРАВО',desc:'Каждая строка сдвигается <strong>вправо</strong> на i позиций: строка 0 — без сдвига, строка 1 — на 1, строка 2 — на 2, строка 3 — на 3.',formula:'row[i] = cyclicRightShift(row[i], i позиций)'},
+  ISB:{op:'🔄 InvSubBytes — обратная замена S-box',desc:'Каждый байт ищется в обратной таблице S-box (256 значений). S-box строится через мультипликативные обратные в GF(2⁸).',formula:'state[r][c] = INV_SBOX[ state[r][c] ]'},
+  IMC:{op:'🔢 InvMixColumns — умножение в GF(2⁸)',desc:'Каждый столбец умножается на обратную матрицу в поле Галуа GF(2⁸). Сложение = XOR, умножение mod x⁸+x⁴+x³+x+1. Диффузия: каждый байт влияет на все 4 байта.',formula:'[0E,0B,0D,09; 09,0E,0B,0D; 0D,09,0E,0B; 0B,0D,09,0E] × col'},
+  DONE:{op:'🎉 Дешифрование завершено!',desc:'AES-256 завершил 14 раундов дешифрования! Матрица содержит исходный открытый текст. Байты читаются по столбцам.',formula:'plaintext = state2bytes(finalState) — дешифровка успешна!'}
+};
+
+const STEP_EXPLAIN={
+  INIT:[{text:'Принимаем 16 байт шифртекста',arrow:'→'},{text:'Заполняем матрицу 4×4 по столбцам',arrow:'→'},{text:'Каждый столбец = 4 байта шифртекста',arrow:'✓'}],
+  ARK:[{text:'Берём ключ раунда (RKn)',arrow:'①'},{text:'XOR каждого байта State с байтом ключа: A ⊕ K',arrow:'②'},{text:'XOR обратим → A⊕K⊕K = A',arrow:'✓'}],
+  ISR:[{text:'Строка 0: не сдвигаем (сдвиг 0)',arrow:'→0'},{text:'Строка 1: сдвиг на 1 позицию ВПРАВО →',arrow:'→1'},{text:'Строка 2: сдвиг на 2 позиции ВПРАВО →→',arrow:'→2'},{text:'Строка 3: сдвиг на 3 позиции ВПРАВО →→→',arrow:'→3'}],
+  ISB:[{text:'Берём каждый байт по одному',arrow:'①'},{text:'Ищем его в таблице INV_SBOX (256 значений)',arrow:'②'},{text:'Заменяем байт на найденное значение',arrow:'✓'}],
+  IMC:[{text:'Берём один столбец (4 байта)',arrow:'①'},{text:'Умножаем на матрицу [0E,0B,0D,09;...] в GF(2⁸)',arrow:'②'},{text:'Сложение=XOR, умножение по модулю полинома',arrow:'③'},{text:'Каждый байт влияет на все 4 байта столбца',arrow:'✓'}],
+  DONE:[{text:'Все 14 раундов выполнены!',arrow:'🎉'},{text:'Матрица содержит исходный открытый текст',arrow:'✓'},{text:'Читаем байты по столбцам → текст восстановлен',arrow:'🔓'}]
+};
+
+const MASCOT_HINTS={
+  ru:{
+    IDLE:'Привет! Я Беркут, твой помощник по AES-256. Введи текст, нажми «Зашифровать», и разберём шаги вместе.',
+    ENC:'Шифрование готово. Нажми «Изучить дешифрование», и я покажу каждый шаг понятно.',
+    INIT:'Сначала загружаем 16 байт шифртекста в матрицу 4 x 4. Байты идут по столбцам.',
+    ARK_INIT:'Первый шаг - XOR с ключом раунда RK14. Это последний ключ из расписания ключей.',
+    ISR:'InvShiftRows сдвигает строки вправо: ряд 1 на 1, ряд 2 на 2, ряд 3 на 3 позиции.',
+    ISB:'InvSubBytes: берем байт, первая hex-цифра выбирает строку таблицы, вторая выбирает столбец. На пересечении новое значение.',
+    ARK:'AddRoundKey снова делает XOR с ключом. У каждого раунда свой ключ.',
+    IMC:'InvMixColumns работает по столбцам. Следи за цветными стрелками: каждый столбец считается отдельно.',
+    DONE:'Все раунды пройдены: открытый текст восстановлен.'
+  },
+  en:{
+    IDLE:'Hi! I am Berkut, your AES-256 helper. Enter text, click Encrypt, and we will walk through the steps together.',
+    ENC:'Encryption is ready. Click Study Decryption, and I will explain each step clearly.',
+    INIT:'First, we load 16 ciphertext bytes into the 4 x 4 State matrix. Bytes go column by column.',
+    ARK_INIT:'The first step is XOR with round key RK14. This is the last key from the key schedule.',
+    ISR:'InvShiftRows shifts rows to the right: row 1 by 1, row 2 by 2, row 3 by 3 positions.',
+    ISB:'InvSubBytes: take a byte, use the first hex digit as the table row and the second as the column. The intersection gives the new value.',
+    ARK:'AddRoundKey applies XOR with the round key again. Every round uses its own key.',
+    IMC:'InvMixColumns works column by column. Watch the colored arrows: each column is calculated separately.',
+    DONE:'All rounds are complete: the plaintext has been recovered.'
+  },
+  kz:{
+    IDLE:'Сәлем! Мен Беркутпын, AES-256 бойынша көмекшіңмін. Мәтін енгізіп, «Шифрлеу» батырмасын бас, қадамдарды бірге қараймыз.',
+    ENC:'Шифрлеу дайын. «Дешифрлеуді үйрену» батырмасын бас, әр қадамды түсіндіремін.',
+    INIT:'Алдымен 16 байт шифрмәтінді 4 x 4 State матрицасына жүктейміз. Байттар баған бойынша жазылады.',
+    ARK_INIT:'Бірінші қадам - RK14 раунд кілтімен XOR. Бұл кілт кестесіндегі соңғы кілт.',
+    ISR:'InvShiftRows жолдарды оңға жылжытады: 1-жол 1, 2-жол 2, 3-жол 3 орынға.',
+    ISB:'InvSubBytes: байтты аламыз, бірінші hex цифр кесте жолын, екінші цифр бағанын таңдайды. Қиылыста жаңа мән тұрады.',
+    ARK:'AddRoundKey қайтадан раунд кілтімен XOR жасайды. Әр раундтың өз кілті бар.',
+    IMC:'InvMixColumns бағандармен жұмыс істейді. Түрлі түсті көрсеткіштерге қара: әр баған бөлек есептеледі.',
+    DONE:'Барлық раунд аяқталды: ашық мәтін қалпына келді.'
+  }
+};
+function mascotHint(key){
+  const pack=MASCOT_HINTS[currentLang]||MASCOT_HINTS.ru;
+  return pack[key]||pack.ARK||pack.IDLE;
+}
+function refreshMascotChrome(){
+  const title={ru:'Вернуть помощника Беркута',en:'Bring Berkut back',kz:'Беркут көмекшісін қайтару'}[currentLang]||'Bring Berkut back';
+  const alt={ru:'Беркут помощник',en:'Berkut helper',kz:'Беркут көмекші'}[currentLang]||'Berkut helper';
+  const summon=document.getElementById('berkutSummon');if(summon)summon.title=title;
+  const img=document.getElementById('mascotPhoto');if(img)img.alt=alt;
+}
+function refreshMascotText(){
+  const step=decSteps[stepIdx];
+  const key=step?(step.op==='ARK'&&step.dn===0?'ARK_INIT':step.op):(appMode==='encrypted'?'ENC':'IDLE');
+  const el=document.getElementById('mascotTxt');
+  if(el)el.textContent=mascotHint(key);
+}
+STEP_EXPLAIN.ISB=[
+  {text:'Берем байт из кубика State, например AB',arrow:'1'},
+  {text:'Первая hex-цифра A указывает строку таблицы INV S-BOX',arrow:'↓'},
+  {text:'Вторая hex-цифра B указывает столбец таблицы',arrow:'→'},
+  {text:'На пересечении строки и столбца берем новое значение и записываем его обратно в кубик',arrow:'✓'}
+];
+let currentLang='ru';
+const LANG_PACK={
+  ru:{
+    badge:'ДЕШИФРОВЩИК · TOPIC 2',newKey:'↺ Новый ключ',themeDark:'🌙 Тема',themeLight:'☀️ Тема',statusIdle:'ОЖИДАНИЕ',statusEnc:'ЗАШИФРОВАНО',statusDec:'ДЕШИФРОВАНИЕ',statusDone:'✅ ДЕШИФРОВАНО',
+    encBtn:'🔐 ЗАШИФРОВАТЬ',decBtn:'📖 ИЗУЧИТЬ ДЕШИФРОВАНИЕ →',reset:'✕ Сбросить',
+    theoryTag:'Теория текущего этапа',cellPick:'Выберите ячейку матрицы',cellHint:'Нажмите на любой кубик State, чтобы увидеть происхождение значения.',
+    ui:{keyLabel:'КЛЮЧ:',a11yTitle:'♿ Доступность',largeText:'Крупный текст',contrast:'Высокий контраст',slowAnim:'Замедлить анимации',fontSize:'Размер шрифта',plainLabel:'📝 ОТКРЫТЫЙ ТЕКСТ (макс. 16 байт)',secretKey:'🔑 СЕКРЕТНЫЙ КЛЮЧ — 256 БИТ',newKeyLong:'↺ Сгенерировать новый ключ',cipherHex:'🔒 ШИФРТЕКСТ (HEX):',decText:'✅ РАСШИФРОВАННЫЙ ТЕКСТ:',ascii:'ASCII:',idleTitle:'AES-256 Тренажёр',idleSub:'Изучи военный стандарт шифрования пошагово с интерактивными анимациями!',idleStep1:'Введи текст слева (до 16 символов)',idleStep2:'Нажми "Зашифровать" 🔐',idleStep3:'Изучи каждый шаг дешифрования!',plainText:'📝 ОТКРЫТЫЙ ТЕКСТ',cipherText:'🔒 ШИФРТЕКСТ',study:'📖 Изучить дешифрование пошагово →',explainTitle:'📋 Что происходит?',mixTitle:'🔢 Пошаговое умножение столбцов в GF(2⁸)',shift:'СДВИГ',matrixState:'МАТРИЦА СОСТОЯНИЯ (4×4)',beforeXor:'МАТРИЦА ДО XOR',roundKey:'КЛЮЧ РАУНДА',sboxTitle:'INV S-BOX таблица',sboxHint:'подсвечен текущий байт',speed:'⚡ Скорость:',keyboard:'← → клавиатура',prev:'◀ НАЗАД',next:'ДАЛЕЕ ▶',flowHeader:'ЭТАПЫ ДЕШИФРОВАНИЯ AES-256',flowEmpty:'🔒 Начните дешифрование<br>чтобы увидеть прогресс'},
+    theory:{
+      IDLE:{op:'🛡️ AES-256 Decryption Engine',desc:'Введите текст, зашифруйте его и изучите обратный процесс AES-256 как профессиональный криптографический дашборд.',formula:'keyLen=256 бит | rounds=14 | roundKeys=15'},
+      ENC:{op:'✅ Шифрование завершено',desc:'Шифртекст готов. Теперь можно пройти дешифрование по шагам и увидеть, как каждый байт возвращается к открытому тексту.',formula:'C = AES_Encrypt(P, K)'},
+      INIT:{op:'📥 Загрузка шифртекста в State',desc:'16 байт шифртекста загружаются в матрицу 4×4 по столбцам.',formula:'state[r][c] = cipher[c·4 + r]'},
+      ARK:{op:'⊕ AddRoundKey — XOR с ключом раунда',desc:'Каждый байт State XOR-ится с байтом ключа в той же позиции. Нажмите на ключ или ячейку, чтобы увидеть формулу.',formula:'state[r][c] = previous[r][c] ⊕ roundKey[c·4 + r]'},
+      ISR:{op:'↔️ InvShiftRows — сдвиг вправо',desc:'Строки матрицы циклически сдвигаются вправо: 0, 1, 2 и 3 позиции.',formula:'row[i] = cyclicRightShift(row[i], i)'},
+      ISB:{op:'🔄 InvSubBytes — поиск в INV S-BOX',desc:'Байт делится на две hex-цифры: первая выбирает строку таблицы, вторая выбирает столбец.',formula:'state[r][c] = INV_SBOX[byte]'},
+      IMC:{op:'🔢 InvMixColumns — умножение в GF(2⁸)',desc:'Каждый столбец умножается на обратную матрицу. Внутри формул сложение означает XOR.',formula:'matrix [0E,0B,0D,09; ...] × column'},
+      DONE:{op:'🎉 Дешифрование завершено',desc:'Матрица содержит открытый текст. Читаем байты по столбцам и получаем исходную строку.',formula:'plaintext = state2bytes(finalState)'}
+    }
+  },
+  en:{
+    badge:'DECRYPTION · TOPIC 2',newKey:'↺ New key',themeDark:'🌙 Theme',themeLight:'☀️ Theme',statusIdle:'IDLE',statusEnc:'ENCRYPTED',statusDec:'DECRYPTING',statusDone:'✅ DECRYPTED',
+    encBtn:'🔐 ENCRYPT',decBtn:'📖 STUDY DECRYPTION →',reset:'✕ Reset',
+    theoryTag:'Current Step Theory',cellPick:'Select a matrix cell',cellHint:'Click any State cell to see where its value came from.',
+    ui:{keyLabel:'KEY:',a11yTitle:'♿ Accessibility',largeText:'Large text',contrast:'High contrast',slowAnim:'Slow animations',fontSize:'Font size',plainLabel:'📝 PLAINTEXT (max 16 bytes)',secretKey:'🔑 SECRET KEY — 256 BITS',newKeyLong:'↺ Generate new key',cipherHex:'🔒 CIPHERTEXT (HEX):',decText:'✅ DECRYPTED TEXT:',ascii:'ASCII:',idleTitle:'AES-256 Trainer',idleSub:'Study the military-grade encryption standard step by step with interactive animations!',idleStep1:'Enter text on the left (up to 16 characters)',idleStep2:'Click "Encrypt" 🔐',idleStep3:'Study every decryption step!',plainText:'📝 PLAINTEXT',cipherText:'🔒 CIPHERTEXT',study:'📖 Study decryption step by step →',explainTitle:'📋 What is happening?',mixTitle:'🔢 Step-by-step GF(2⁸) column multiplication',shift:'SHIFT',matrixState:'STATE MATRIX (4×4)',beforeXor:'MATRIX BEFORE XOR',roundKey:'ROUND KEY',sboxTitle:'INV S-BOX table',sboxHint:'current byte highlighted',speed:'⚡ Speed:',keyboard:'← → keyboard',prev:'◀ BACK',next:'NEXT ▶',flowHeader:'AES-256 DECRYPTION STEPS',flowEmpty:'🔒 Start decryption<br>to see progress'},
+    theory:{
+      IDLE:{op:'🛡️ AES-256 Decryption Engine',desc:'Enter text, encrypt it, then study AES-256 decryption step by step in a cybersecurity dashboard.',formula:'keyLen=256 bits | rounds=14 | roundKeys=15'},
+      ENC:{op:'✅ Encryption complete',desc:'Ciphertext is ready. Now walk through decryption and watch each byte return to plaintext.',formula:'C = AES_Encrypt(P, K)'},
+      INIT:{op:'📥 Load ciphertext into State',desc:'16 ciphertext bytes are loaded into a 4×4 State matrix column by column.',formula:'state[r][c] = cipher[c·4 + r]'},
+      ARK:{op:'⊕ AddRoundKey — XOR with round key',desc:'Each State byte is XORed with the round-key byte in the same position. Click a key or cell to see the formula.',formula:'state[r][c] = previous[r][c] ⊕ roundKey[c·4 + r]'},
+      ISR:{op:'↔️ InvShiftRows — shift right',desc:'Matrix rows shift cyclically to the right by 0, 1, 2 and 3 positions.',formula:'row[i] = cyclicRightShift(row[i], i)'},
+      ISB:{op:'🔄 InvSubBytes — INV S-BOX lookup',desc:'A byte splits into two hex digits: the first selects the table row, the second selects the column.',formula:'state[r][c] = INV_SBOX[byte]'},
+      IMC:{op:'🔢 InvMixColumns — GF(2⁸) multiplication',desc:'Each column is multiplied by the inverse matrix. In these formulas addition means XOR.',formula:'matrix [0E,0B,0D,09; ...] × column'},
+      DONE:{op:'🎉 Decryption complete',desc:'The matrix now contains plaintext. Read bytes column by column to recover the original string.',formula:'plaintext = state2bytes(finalState)'}
+    }
+  },
+  kz:{
+    badge:'ДЕШИФРЛЕУ · TOPIC 2',newKey:'↺ Жаңа кілт',themeDark:'🌙 Тема',themeLight:'☀️ Тема',statusIdle:'КҮТУ',statusEnc:'ШИФРЛЕНДІ',statusDec:'ДЕШИФРЛЕУ',statusDone:'✅ ДЕШИФРЛЕНДІ',
+    encBtn:'🔐 ШИФРЛЕУ',decBtn:'📖 ДЕШИФРЛЕУДІ ҮЙРЕНУ →',reset:'✕ Тазалау',
+    theoryTag:'Ағымдағы қадам теориясы',cellPick:'Матрица ұяшығын таңдаңыз',cellHint:'Мән қайдан шыққанын көру үшін State ұяшығын басыңыз.',
+    ui:{keyLabel:'КІЛТ:',a11yTitle:'♿ Қолжетімділік',largeText:'Үлкен мәтін',contrast:'Жоғары контраст',slowAnim:'Анимацияны баяулату',fontSize:'Қаріп өлшемі',plainLabel:'📝 АШЫҚ МӘТІН (макс. 16 байт)',secretKey:'🔑 ҚҰПИЯ КІЛТ — 256 БИТ',newKeyLong:'↺ Жаңа кілт жасау',cipherHex:'🔒 ШИФРМӘТІН (HEX):',decText:'✅ ДЕШИФРЛЕНГЕН МӘТІН:',ascii:'ASCII:',idleTitle:'AES-256 жаттықтырғышы',idleSub:'Әскери деңгейдегі шифрлеу стандартын интерактивті анимациялармен қадамдап үйреніңіз!',idleStep1:'Сол жаққа мәтін енгізіңіз (16 таңбаға дейін)',idleStep2:'"Шифрлеу" батырмасын басыңыз 🔐',idleStep3:'Дешифрлеудің әр қадамын үйреніңіз!',plainText:'📝 АШЫҚ МӘТІН',cipherText:'🔒 ШИФРМӘТІН',study:'📖 Дешифрлеуді қадамдап үйрену →',explainTitle:'📋 Не болып жатыр?',mixTitle:'🔢 GF(2⁸) бағандарын қадамдап көбейту',shift:'ЖЫЛЖЫТУ',matrixState:'STATE МАТРИЦАСЫ (4×4)',beforeXor:'XOR АЛДЫНДАҒЫ МАТРИЦА',roundKey:'РАУНД КІЛТІ',sboxTitle:'INV S-BOX кестесі',sboxHint:'ағымдағы байт белгіленген',speed:'⚡ Жылдамдық:',keyboard:'← → пернетақта',prev:'◀ АРТҚА',next:'КЕЛЕСІ ▶',flowHeader:'AES-256 ДЕШИФРЛЕУ ҚАДАМДАРЫ',flowEmpty:'🔒 Прогресті көру үшін<br>дешифрлеуді бастаңыз'},
+    theory:{
+      IDLE:{op:'🛡️ AES-256 Decryption Engine',desc:'Мәтінді енгізіп, шифрлеңіз, содан кейін AES-256 дешифрлеуін қадамдап зерттеңіз.',formula:'keyLen=256 бит | rounds=14 | roundKeys=15'},
+      ENC:{op:'✅ Шифрлеу аяқталды',desc:'Шифрмәтін дайын. Енді әр байттың ашық мәтінге қалай қайтатынын қадамдап көріңіз.',formula:'C = AES_Encrypt(P, K)'},
+      INIT:{op:'📥 Шифрмәтінді State матрицасына жүктеу',desc:'16 байт шифрмәтін 4×4 State матрицасына баған бойынша жазылады.',formula:'state[r][c] = cipher[c·4 + r]'},
+      ARK:{op:'⊕ AddRoundKey — раунд кілтімен XOR',desc:'Әр State байты сол позициядағы раунд кілтімен XOR жасайды. Формуланы көру үшін кілтті немесе ұяшықты басыңыз.',formula:'state[r][c] = previous[r][c] ⊕ roundKey[c·4 + r]'},
+      ISR:{op:'↔️ InvShiftRows — оңға жылжыту',desc:'Матрица жолдары 0, 1, 2 және 3 орынға оңға циклдік жылжиды.',formula:'row[i] = cyclicRightShift(row[i], i)'},
+      ISB:{op:'🔄 InvSubBytes — INV S-BOX іздеу',desc:'Байт екі hex цифрға бөлінеді: біріншісі жолды, екіншісі бағанды таңдайды.',formula:'state[r][c] = INV_SBOX[byte]'},
+      IMC:{op:'🔢 InvMixColumns — GF(2⁸) көбейту',desc:'Әр баған кері матрицаға көбейтіледі. Формулаларда қосу XOR дегенді білдіреді.',formula:'matrix [0E,0B,0D,09; ...] × column'},
+      DONE:{op:'🎉 Дешифрлеу аяқталды',desc:'Матрицада ашық мәтін тұр. Байттарды баған бойынша оқып бастапқы мәтінді аламыз.',formula:'plaintext = state2bytes(finalState)'}
+    }
+  }
+};
+function applyTheoryPack(){
+  const pack=LANG_PACK[currentLang]||LANG_PACK.ru;
+  Object.keys(pack.theory).forEach(k=>{THEORY[k]={...THEORY[k],...pack.theory[k]};});
+}
+function textSel(sel,txt){const el=document.querySelector(sel);if(el&&txt!==undefined)el.textContent=txt;}
+function htmlSel(sel,html){const el=document.querySelector(sel);if(el&&html!==undefined)el.innerHTML=html;}
+function applyUiPack(pack){
+  const ui=pack.ui||{};
+  textSel('.theory-tag',(ui.theoryTag||'').toUpperCase());
+  textSel('.h-key-lbl',ui.keyLabel);
+  textSel('.a11y-panel-title',ui.a11yTitle);
+  document.querySelectorAll('.a11y-row label').forEach((el,i)=>{const vals=[ui.largeText,ui.contrast,ui.slowAnim,ui.fontSize];if(vals[i])el.textContent=vals[i];});
+  document.querySelectorAll('.ctrl-lbl').forEach((el,i)=>{const vals=[ui.plainLabel,ui.secretKey];if(vals[i])el.textContent=vals[i];});
+  const keyBtn=document.querySelector('.ctrl-card .btn-reset:not(#btnReset)');if(keyBtn)keyBtn.textContent=ui.newKeyLong;
+  textSel('#encResultBox .result-lbl',ui.cipherHex);
+  textSel('#decResultBox .result-lbl',ui.decText);
+  const asciiLbl=document.querySelector('#decResultBox .result-lbl[style]');if(asciiLbl)asciiLbl.textContent=ui.ascii;
+  textSel('.ci-title',ui.idleTitle);textSel('.ci-sub',ui.idleSub);
+  document.querySelectorAll('.ci-step').forEach((el,i)=>{const n=el.querySelector('.ci-step-num')?.outerHTML||'';const vals=[ui.idleStep1,ui.idleStep2,ui.idleStep3];if(vals[i])el.innerHTML=n+vals[i];});
+  document.querySelectorAll('.enc-label').forEach((el,i)=>{const vals=[ui.plainText,ui.cipherText];if(vals[i])el.textContent=vals[i];});
+  const studyBtn=document.querySelector('#encView .btn-dec');if(studyBtn)studyBtn.textContent=ui.study;
+  textSel('#explainTitle',ui.explainTitle);textSel('.col-anim-title',ui.mixTitle);textSel('.arrows-title',{ru:'SubBytes: пошаговая замена всех 16 ячеек',en:'SubBytes: step-by-step replacement of all 16 cells',kz:'SubBytes: 16 ұяшықты қадамдап ауыстыру'}[currentLang]||'SubBytes');
+  document.querySelectorAll('.matrix-wrap .matrix-lbl').forEach(el=>{if(el.id==='prevLbl')el.textContent=ui.beforeXor;else if(el.id==='rkLbl')el.textContent=ui.roundKey;else el.textContent=ui.matrixState;});
+  document.querySelectorAll('[data-i18n="sboxTitle"]').forEach(el=>el.textContent=ui.sboxTitle);
+  document.querySelectorAll('[data-i18n="sboxHint"]').forEach(el=>el.textContent=ui.sboxHint);
+  textSel('.speed-lbl',ui.speed);textSel('.nav-kb',ui.keyboard);textSel('#navPrev',ui.prev);textSel('#navNext',ui.next);
+  const rp=document.querySelector('.rp-hdr');if(rp)rp.innerHTML='<div class="rp-hdr-dot"></div> '+ui.flowHeader;
+  if(appMode==='idle')htmlSel('#fcWrap',`<div style="padding:2rem;text-align:center;opacity:.45;font-family:'Nunito',sans-serif;font-weight:700;font-size:.7rem;color:var(--tx3);line-height:2">${ui.flowEmpty}</div>`);
+}
+function setLang(lang){
+  currentLang=lang;
+  const pack=LANG_PACK[lang]||LANG_PACK.ru;
+  document.documentElement.lang=lang==='kz'?'kk':lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  document.querySelector('.h-badge').textContent=pack.badge;
+  document.querySelectorAll('button[onclick="generateNewKey()"]').forEach(b=>b.textContent=pack.newKey);
+  document.getElementById('themeBtn').textContent=isDark?pack.themeDark:pack.themeLight;
+  document.getElementById('btnEnc').textContent=appMode==='idle'?pack.encBtn:pack.statusEnc;
+  document.getElementById('btnDec').textContent=pack.decBtn;
+  document.getElementById('btnReset').textContent=pack.reset;
+  const tag=document.querySelector('.center-theory-tag');if(tag)tag.textContent=pack.theoryTag;
+  const title=document.getElementById('cellExplainTitle');if(title)title.textContent=pack.cellPick;
+  const body=document.getElementById('cellExplainBody');if(body)body.textContent=pack.cellHint;
+  applyUiPack(pack);
+  applyTheoryPack();
+  onPtInput();
+  const step=decSteps[stepIdx];
+  setTheory(step?(THEORY[step.op]||THEORY.INIT):THEORY.IDLE);
+  refreshMascotChrome();
+  refreshMascotText();
+  if(step)showStepExplain(step.op);
+  if(appMode==='tutorial'){buildFlowchart();buildAesDiagram();updateFlowchart(stepIdx);renderStep(stepIdx,true);}
+  else if(appMode==='encrypted')setStatus('enc',pack.statusEnc);
+  else setStatus('idle',pack.statusIdle);
+}
+let currentKey=[],currentPt=[],currentCt=[],decSteps=[],stepIdx=0,isAnimating=false,fcItems=[],appMode='idle';
+let isbSkipRequested=false,isbAnimationFinish=null;
+let animSpeed=1,mascotCollapsed=true,mascotDismissed=false;
+
+// ════ SPEED ════
+function setSpeed(s){
+  animSpeed=s;
+  document.querySelectorAll('.speed-btn').forEach(b=>{
+    const v=parseFloat(b.onclick.toString().match(/setSpeed\(([^)]+)\)/)[1]);
+    b.classList.toggle('active',v===s);
+  });
+}
+
+// ════ KEY GENERATION ════
+function generateNewKey(){
+  currentKey=Array.from({length:32},()=>rand());
+  const hex=b2hex(currentKey);
+  document.getElementById('hKeyVal').textContent=hex;
+  document.getElementById('keyDisplay').textContent=hex.match(/.{1,8}/g).join(' ');
+  if(appMode==='tutorial'||appMode==='encrypted')resetAll();
+}
+
+// ════ INPUT VALIDATION ════
+function onPtInput(){
+  const inp=document.getElementById('ptIn');const v=inp.value;
+  const len=new TextEncoder().encode(v).length;
+  const labels={ru:{byte:'Байт',bit:'бит',err:'⚠ Максимум 128 бит (16 байт)'},en:{byte:'Bytes',bit:'bits',err:'⚠ Maximum 128 bits (16 bytes)'},kz:{byte:'Байт',bit:'бит',err:'⚠ Максимум 128 бит (16 байт)'}}[currentLang]||{};
+  const shown=Math.min(len,16),bits=shown*8;
+  document.getElementById('byteCount').textContent=shown;
+  document.getElementById('bitCount').textContent=bits;
+  const err=document.getElementById('errMsg');if(err)err.textContent=labels.err;
+  const ctr=document.getElementById('byteCounter');
+  if(ctr)ctr.innerHTML=`${labels.byte}: <span id="byteCount">${shown}</span>/16 · <span id="bitCount">${bits}</span>/128 ${labels.bit}`;
+  if(len>16){inp.classList.add('err');document.getElementById('errMsg').classList.add('show');ctr.className='byte-counter bad';document.getElementById('btnEnc').disabled=true;return false;}
+  else{inp.classList.remove('err');document.getElementById('errMsg').classList.remove('show');ctr.className='byte-counter '+(len>=14?'warn':'ok');document.getElementById('btnEnc').disabled=false;return true;}
+}
+// ════ ENCRYPT ════
+function doEncrypt(){
+  if(!onPtInput())return;
+  const ptStr=document.getElementById('ptIn').value;
+  const enc=new TextEncoder().encode(ptStr);
+  currentPt=Array.from({length:16},(_,i)=>i<enc.length?enc[i]:0);
+  currentCt=aesEncrypt256(currentPt,currentKey);
+  const ptHex=b2hex(currentPt),ctHex=b2hex(currentCt);
+  playSoundEnc();
+  document.getElementById('ptHexView').textContent=ptHex;
+  document.getElementById('ctHexView').textContent=ctHex;
+  document.getElementById('encResultVal').textContent=ctHex;
+  document.getElementById('encResultBox').classList.remove('hidden');
+  document.getElementById('btnDec').classList.remove('hidden');
+  document.getElementById('btnReset').classList.remove('hidden');
+  document.getElementById('btnEnc').textContent=(LANG_PACK[currentLang]||LANG_PACK.ru).statusEnc;
+  hide('idleView');show('encView');
+  appMode='encrypted';
+  setStatus('enc',(LANG_PACK[currentLang]||LANG_PACK.ru).statusEnc);
+  setTheory(THEORY.ENC);
+  showMascotText(mascotHint('ENC'));
+}
+
+// ════ START TUTORIAL ════
+function startDecryptTutorial(){
+  decSteps=recordDecryptSteps(currentCt,currentKey);
+  stepIdx=0;appMode='tutorial';
+  hide('idleView');hide2('encView');
+  const tv=document.getElementById('tutView');tv.style.display='flex';
+  buildFlowchart();
+  initStateMatrix();initPrevMatrix();initRKMatrix();buildSboxGrid();buildAesDiagram();
+  document.getElementById('stepArrowsVisual')?.after(document.getElementById('sboxSection'));
+  renderStep(0,true);
+  document.getElementById('navNext').disabled=false;
+  setStatus('dec',(LANG_PACK[currentLang]||LANG_PACK.ru).statusDec);
+}
+
+// ════ DIAGRAM ════
+function buildAesDiagram(){
+  const d=document.getElementById('aesDiagram');
+  const t={
+    ru:{ct:'Шифртекст',pt:'✓ Открытый текст',loop:'если R&lt;14 &amp;&amp; R&gt;0'},
+    en:{ct:'Ciphertext',pt:'✓ Plaintext',loop:'if R&lt;14 &amp;&amp; R&gt;0'},
+    kz:{ct:'Шифрмәтін',pt:'✓ Ашық мәтін',loop:'егер R&lt;14 &amp;&amp; R&gt;0'}
+  }[currentLang]||{};
+  d.innerHTML=`
+    <div id="dn-ct" class="diag-node n-ct" onclick="jumpToStep(0)">${t.ct}</div>
+    <div class="diag-arrow"></div>
+    <div id="dn-ark0" class="diag-node n-ark" onclick="jumpToStep(1)">AddRoundKey</div>
+    <div class="diag-arrow"></div>
+    <div style="display:flex;align-items:center;position:relative">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+        <div id="dn-imc" class="diag-node n-imc" onclick="">InvMixColumns</div>
+        <div class="diag-arrow"></div>
+        <div id="dn-ark" class="diag-node n-ark" onclick="">AddRoundKey</div>
+        <div class="diag-arrow"></div>
+        <div id="dn-isr" class="diag-node n-isr" onclick="">InvShiftRows</div>
+        <div class="diag-arrow"></div>
+        <div id="dn-isb" class="diag-node n-isb" onclick="">InvSubBytes</div>
+      </div>
+      <svg width="72" height="180" style="position:absolute;left:100%;top:0" viewBox="0 0 72 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 5 20 L 52 20 L 52 160 L 5 160" stroke="rgba(251,146,60,.6)" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+        <polygon points="5,154 0,160 5,166" fill="rgba(251,146,60,.7)"/>
+        <text x="54" y="95" font-family="Nunito" font-weight="700" font-size="8" fill="rgba(251,146,60,.8)" writing-mode="vertical-rl">${t.loop}</text>
+      </svg>
+    </div>
+    <div class="diag-arrow"></div>
+    <div id="dn-pt" class="diag-node n-pt" onclick="jumpToStep(decSteps.length-1)">${t.pt}</div>
+  `;
+}
+
+function updateDiagramActive(step){
+  document.querySelectorAll('.diag-node').forEach(n=>n.classList.remove('active-node'));
+  let id=null;
+  if(step.op==='INIT')id='dn-ct';
+  else if(step.op==='DONE')id='dn-pt';
+  else if(step.op==='ARK')id=step.dn===0?'dn-ark0':'dn-ark';
+  else if(step.op==='ISR')id='dn-isr';
+  else if(step.op==='ISB')id='dn-isb';
+  else if(step.op==='IMC')id='dn-imc';
+  if(id)document.getElementById(id)?.classList.add('active-node');
+}
+
+// ════ SBOX GRID ════
+function buildSboxGrid(){
+  const grid=document.getElementById('sboxGrid');grid.innerHTML='';
+  const corner=document.createElement('div');corner.className='sbox-cell sbox-axis sbox-corner';corner.textContent='r/c';grid.appendChild(corner);
+  for(let c=0;c<16;c++){const axis=document.createElement('div');axis.className='sbox-cell sbox-axis';axis.dataset.col=c;axis.textContent=h(c).slice(1);grid.appendChild(axis);}
+  for(let i=0;i<256;i++){
+    if(i%16===0){const axis=document.createElement('div');axis.className='sbox-cell sbox-axis';axis.dataset.row=i>>4;axis.textContent=h(i>>4).slice(1);grid.appendChild(axis);}
+    const cell=document.createElement('div');cell.className='sbox-cell';cell.id=`sb${i}`;
+    cell.dataset.row=i>>4;cell.dataset.col=i&15;
+    const v=document.createElement('div');v.className='sbox-val';v.textContent=h(INV_SBOX[i]);
+    cell.appendChild(v);grid.appendChild(cell);
+  }
+}
+function highlightSbox(byteVal){
+  document.querySelectorAll('.sbox-cell').forEach(c=>c.classList.remove('hi','row-line','col-line'));
+  const row=byteVal>>4,col=byteVal&15;
+  document.querySelectorAll(`.sbox-cell[data-row="${row}"]`).forEach(c=>c.classList.add('row-line'));
+  document.querySelectorAll(`.sbox-cell[data-col="${col}"]`).forEach(c=>c.classList.add('col-line'));
+  const el=document.getElementById(`sb${byteVal}`);
+  if(el){el.classList.add('hi');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+}
+
+function toggleSboxFullscreen(){
+  const section=document.getElementById('sboxSection');
+  const btn=document.getElementById('sboxFullBtn');
+  if(!section)return;
+  const labels={ru:{close:'Закрыть полноэкранный режим',open:'Полноэкранный режим'},en:{close:'Close fullscreen',open:'Fullscreen'},kz:{close:'Толық экранды жабу',open:'Толық экран'}}[currentLang]||{};
+  const open=section.classList.toggle('fullscreen');
+  document.body.classList.toggle('sbox-fullscreen-open',open);
+  if(btn){btn.textContent=open?'×':'⛶';btn.title=open?labels.close:labels.open;}
+}
+// ════ SHIFT ROWS VISUAL ════
+function buildShiftVisual(prevState,newState){
+  const wrap=document.getElementById('shiftVisual');wrap.innerHTML='';
+  const shifts=[0,1,2,3];
+  const rowColors=['var(--ac)','var(--or)','var(--ye)','var(--gr)'];
+  const rowEmoji=['➡️ +0','➡️ +1','➡️ +2','➡️ +3'];
+  shifts.forEach((shift,row)=>{
+    const rowDiv=document.createElement('div');rowDiv.className='shift-row-vis';
+    const rowWord={ru:'Ряд',en:'Row',kz:'Жол'}[currentLang]||'Row';
+    const lbl=document.createElement('div');lbl.className='shift-row-label';lbl.style.color=rowColors[row];lbl.textContent=`${rowWord} ${row}`;
+    const cells=document.createElement('div');cells.className='shift-row-cells';
+    // Show BEFORE state
+    for(let c=0;c<4;c++){
+      const cell=document.createElement('div');cell.className='src';
+      cell.style.borderColor=rowColors[row];cell.style.color=rowColors[row];
+      cell.textContent=h(prevState[row][c]);cells.appendChild(cell);
+    }
+    // Arrow
+    const arr=document.createElement('div');arr.className='shift-arrow-anim';arr.style.color=rowColors[row];
+    arr.textContent=rowEmoji[shift];
+    // Show AFTER state
+    const cells2=document.createElement('div');cells2.className='shift-row-cells';
+    for(let c=0;c<4;c++){
+      const cell=document.createElement('div');cell.className='src shift-after-cell'+(shift>0?' moving':'');
+      cell.style.borderColor=rowColors[row];
+      cell.style.color=rowColors[row];
+      cell.style.background='rgba(255,255,255,.72)';
+      cell.style.animationDelay=(c*55)+'ms';
+      cell.textContent=h(newState[row][c]);cells2.appendChild(cell);
+    }
+    rowDiv.appendChild(lbl);rowDiv.appendChild(cells);rowDiv.appendChild(arr);rowDiv.appendChild(cells2);
+    wrap.appendChild(rowDiv);
+  });
+  wrap.classList.add('show');
+}
+
+// ════ SUBBYTES ARROWS VISUAL ════
+function buildSubBytesArrows(prevState,newState){
+  const wrap=document.getElementById('stepArrowsVisual');
+  const cont=document.getElementById('arrowsContent');
+  cont.innerHTML='';
+  playSoundArrow();
+  const t={
+    ru:{note:'SubBytes читается как таблица 16 x 16: первая hex-цифра байта выбирает строку, вторая hex-цифра выбирает столбец. На пересечении стоит новое значение байта.',row:'строка',col:'столбец'},
+    en:{note:'SubBytes is read as a 16 x 16 table: the first hex digit selects the row, the second hex digit selects the column. The intersection contains the new byte value.',row:'row',col:'column'},
+    kz:{note:'SubBytes 16 x 16 кесте ретінде оқылады: бірінші hex цифр жолды, екінші hex цифр бағанды таңдайды. Қиылыста жаңа байт мәні орналасқан.',row:'жол',col:'баған'}
+  }[currentLang]||{};
+  const guide=document.createElement('div');guide.className='subbytes-guide';
+  const note=document.createElement('div');note.className='subbytes-guide-note';
+  note.textContent=t.note;
+  const grid=document.createElement('div');grid.className='subbytes-trace-grid';
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const beforeVal=prevState[r][c],afterVal=newState[r][c],hex=h(beforeVal);
+    const rowHex=hex[0],colHex=hex[1];
+    const card=document.createElement('div');card.className='subbyte-step-card';card.style.animationDelay=((r*4+c)*50)+'ms';
+    const before=document.createElement('div');before.className='subbyte-byte';before.textContent=`S[${r}][${c}] ${hex}`;
+    const arr=document.createElement('div');arr.className='subbyte-arrow';arr.textContent='→';
+    const after=document.createElement('div');after.className='subbyte-out';after.textContent=h(afterVal);
+    const lookup=document.createElement('div');lookup.className='subbyte-lookup';
+    lookup.textContent=`1) ${t.row} ${rowHex}  →  2) ${t.col} ${colHex}  →  3) INV_SBOX[${rowHex},${colHex}] = ${h(afterVal)}`;
+    card.appendChild(before);card.appendChild(arr);card.appendChild(after);card.appendChild(lookup);
+    grid.appendChild(card);
+  }
+  guide.appendChild(note);guide.appendChild(grid);cont.appendChild(guide);
+  wrap.classList.add('show');
+}
+function buildColAnim(prevState,newState,focusCol=0){
+  const wrap=document.getElementById('colAnimWrap');
+  const cols=document.getElementById('colAnimCols');
+  cols.innerHTML='';
+  const t={
+    ru:{input:'1. Берем столбцы State',matrix:'2. Умножаем на обратную матрицу',formula:c=>`3. Col ${c}: умножение + XOR`,result:c=>`Результат Col ${c}`},
+    en:{input:'1. Take State columns',matrix:'2. Multiply by the inverse matrix',formula:c=>`3. Col ${c}: multiply + XOR`,result:c=>`Result Col ${c}`},
+    kz:{input:'1. State бағандарын аламыз',matrix:'2. Кері матрицаға көбейтеміз',formula:c=>`3. Col ${c}: көбейту + XOR`,result:c=>`Нәтиже Col ${c}`}
+  }[currentLang]||{};
+  const mat=[
+    [0x0e,0x0b,0x0d,0x09],
+    [0x09,0x0e,0x0b,0x0d],
+    [0x0d,0x09,0x0e,0x0b],
+    [0x0b,0x0d,0x09,0x0e]
+  ];
+  const guide=document.createElement('div');guide.className='mix-guide';
+  const input=document.createElement('div');input.className='mix-panel';
+  input.innerHTML=`<div class="mix-title">${t.input}</div>`;
+  const inputStack=document.createElement('div');inputStack.className='mix-col-stack';
+  for(let c=0;c<4;c++){
+    const col=document.createElement('div');col.className='mix-byte';
+    col.textContent=`Col ${c}: ${[0,1,2,3].map(r=>h(prevState[r][c])).join(' ')}`;
+    inputStack.appendChild(col);
+  }
+  input.appendChild(inputStack);
+
+  const matrix=document.createElement('div');matrix.className='mix-panel';
+  matrix.innerHTML=`<div class="mix-title">${t.matrix}</div>`;
+  const coefStack=document.createElement('div');coefStack.className='mix-col-stack';
+  mat.forEach(row=>{
+    const d=document.createElement('div');d.className='mix-coef';d.textContent=row.map(h).join('  ');
+    coefStack.appendChild(d);
+  });
+  matrix.appendChild(coefStack);
+
+  const formulas=document.createElement('div');formulas.className='mix-panel';
+  formulas.innerHTML=`<div class="mix-title">${t.formula(focusCol)}</div>`;
+  for(let outRow=0;outRow<4;outRow++){
+    const parts=mat[outRow].map((coef,row)=>`${h(coef)}·${h(prevState[row][focusCol])}`);
+    const d=document.createElement('div');d.className='mix-formula'+(outRow===0?' active':'');
+    d.textContent=`row ${outRow}: ${parts.join(' ⊕ ')} = ${h(newState[outRow][focusCol])}`;
+    formulas.appendChild(d);
+  }
+  const resultStack=document.createElement('div');resultStack.className='mix-col-stack';resultStack.style.marginTop='.55rem';
+  for(let c=0;c<4;c++){
+    const d=document.createElement('div');d.className='mix-result';
+    d.textContent=`${t.result(c)}: ${[0,1,2,3].map(r=>h(newState[r][c])).join(' ')}`;
+    resultStack.appendChild(d);
+  }
+  formulas.appendChild(resultStack);
+  guide.appendChild(input);guide.appendChild(matrix);guide.appendChild(formulas);
+  cols.appendChild(guide);
+  wrap.classList.add('show');
+}
+// ════ STEP EXPLANATION ════
+function stepExplainPack(op){
+  const packs={
+    ru:{
+      INIT:[['Принимаем 16 байт шифртекста','→'],['Заполняем матрицу 4×4 по столбцам','→'],['Каждый столбец = 4 байта шифртекста','✓']],
+      ARK:[['Берём ключ раунда (RKn)','①'],['XOR каждого байта State с байтом ключа: A ⊕ K','②'],['XOR обратим → A⊕K⊕K = A','✓']],
+      ISR:[['Строка 0: не сдвигаем (сдвиг 0)','→0'],['Строка 1: сдвиг на 1 позицию ВПРАВО →','→1'],['Строка 2: сдвиг на 2 позиции ВПРАВО →→','→2'],['Строка 3: сдвиг на 3 позиции ВПРАВО →→→','→3']],
+      ISB:[['Берем байт из кубика State, например AB','1'],['Первая hex-цифра A указывает строку таблицы INV S-BOX','↓'],['Вторая hex-цифра B указывает столбец таблицы','→'],['На пересечении строки и столбца берем новое значение и записываем его обратно в кубик','✓']],
+      IMC:[['Берём один столбец (4 байта)','①'],['Умножаем на матрицу [0E,0B,0D,09;...] в GF(2⁸)','②'],['Сложение=XOR, умножение по модулю полинома','③'],['Каждый байт влияет на все 4 байта столбца','✓']],
+      DONE:[['Все 14 раундов выполнены!','🎉'],['Матрица содержит исходный открытый текст','✓'],['Читаем байты по столбцам → текст восстановлен','🔓']]
+    },
+    en:{
+      INIT:[['Take 16 ciphertext bytes','→'],['Fill the 4×4 matrix column by column','→'],['Each column contains 4 ciphertext bytes','✓']],
+      ARK:[['Take the round key (RKn)','①'],['XOR every State byte with the key byte: A ⊕ K','②'],['XOR is reversible → A⊕K⊕K = A','✓']],
+      ISR:[['Row 0: no shift (shift 0)','→0'],['Row 1: shift right by 1 position →','→1'],['Row 2: shift right by 2 positions →→','→2'],['Row 3: shift right by 3 positions →→→','→3']],
+      ISB:[['Take one byte from a State cell, for example AB','1'],['The first hex digit A selects the INV S-BOX row','↓'],['The second hex digit B selects the table column','→'],['At the row/column intersection, take the new value and write it back','✓']],
+      IMC:[['Take one column (4 bytes)','①'],['Multiply by the [0E,0B,0D,09;...] matrix in GF(2⁸)','②'],['Addition means XOR; multiplication is modulo the AES polynomial','③'],['Each byte affects all 4 bytes in the column','✓']],
+      DONE:[['All 14 rounds are complete!','🎉'],['The matrix contains the original plaintext','✓'],['Read bytes column by column → text recovered','🔓']]
+    },
+    kz:{
+      INIT:[['16 байт шифрмәтінді аламыз','→'],['4×4 матрицаны баған бойынша толтырамыз','→'],['Әр баған = шифрмәтіннің 4 байты','✓']],
+      ARK:[['Раунд кілтін аламыз (RKn)','①'],['Әр State байтын кілт байтымен XOR жасаймыз: A ⊕ K','②'],['XOR кері қайтады → A⊕K⊕K = A','✓']],
+      ISR:[['0-жол: жылжымайды (0)','→0'],['1-жол: оңға 1 орын жылжиды →','→1'],['2-жол: оңға 2 орын жылжиды →→','→2'],['3-жол: оңға 3 орын жылжиды →→→','→3']],
+      ISB:[['State ұяшығынан бір байт аламыз, мысалы AB','1'],['Бірінші hex цифр A INV S-BOX жолын таңдайды','↓'],['Екінші hex цифр B кесте бағанын таңдайды','→'],['Жол мен баған қиылысындағы жаңа мәнді алып, ұяшыққа жазамыз','✓']],
+      IMC:[['Бір бағанды аламыз (4 байт)','①'],['GF(2⁸) ішінде [0E,0B,0D,09;...] матрицасына көбейтеміз','②'],['Қосу = XOR, көбейту AES полиномы бойынша','③'],['Әр байт бағандағы барлық 4 байтқа әсер етеді','✓']],
+      DONE:[['14 раундтың бәрі аяқталды!','🎉'],['Матрицада бастапқы ашық мәтін бар','✓'],['Байттарды баған бойынша оқимыз → мәтін қалпына келді','🔓']]
+    }
+  };
+  return ((packs[currentLang]||packs.ru)[op]||[]).map(([text,arrow])=>({text,arrow}));
+}
+function showStepExplain(op){
+  const steps=stepExplainPack(op);const box=document.getElementById('stepExplain');const stepsEl=document.getElementById('explainSteps');
+  if(!steps.length){box.classList.remove('show');return;}
+  stepsEl.innerHTML=steps.map((s,i)=>`
+    <div class="explain-step">
+      <div class="explain-num">${i+1}</div>
+      <div>${s.text} <span class="step-arrow">${s.arrow||''}</span></div>
+    </div>
+  `).join('');
+  box.classList.add('show');
+}
+function setSboxSkipVisible(show){
+  const btn=document.getElementById('sboxSkipBtn');
+  if(!btn)return;
+  const txt={ru:'Пропустить анимацию',en:'Skip animation',kz:'Анимацияны өткізу'}[currentLang]||'Skip animation';
+  btn.textContent=txt;
+  btn.classList.toggle('show',!!show);
+  btn.disabled=!show;
+}
+function skipSubBytesAnimation(){
+  isbSkipRequested=true;
+  if(typeof isbAnimationFinish==='function')isbAnimationFinish(true);
+}
+function playNavForStep(idx){
+  if(!decSteps[idx])return;
+  if(typeof playStepSound==='function')playStepSound(decSteps[idx].op);
+  else if(typeof playSoundNav==='function')playSoundNav();
+}
+function stopStepAnimation(){
+  isAnimating=false;
+  isbSkipRequested=true;
+  if(typeof isbAnimationFinish==='function')isbAnimationFinish(true);
+  isbAnimationFinish=null;
+  setSboxSkipVisible(false);
+}
+function nextStep(){
+  if(stepIdx>=decSteps.length-1)return;
+  stopStepAnimation();
+  stepIdx++;
+  renderStep(stepIdx,true);
+  playNavForStep(stepIdx);
+}
+function prevStep(){
+  if(stepIdx<=0)return;
+  stopStepAnimation();
+  stepIdx--;
+  renderStep(stepIdx,true);
+  playNavForStep(stepIdx);
+}
+function jumpToStep(idx){
+  idx=Number(idx);
+  if(!Number.isFinite(idx)||idx<0||idx>=decSteps.length)return;
+  stopStepAnimation();
+  stepIdx=idx;
+  renderStep(stepIdx,true);
+  playNavForStep(stepIdx);
+}
+function localizedStepName(step){
+  const p={
+    ru:{INIT:'Шифртекст — Начало',ARK:'AddRoundKey',ISR:'InvShiftRows',ISB:'InvSubBytes',IMC:'InvMixColumns',DONE:'✓ Открытый текст!',final:'Финал'},
+    en:{INIT:'Ciphertext — Start',ARK:'AddRoundKey',ISR:'InvShiftRows',ISB:'InvSubBytes',IMC:'InvMixColumns',DONE:'✓ Plaintext!',final:'Final'},
+    kz:{INIT:'Шифрмәтін — Басы',ARK:'AddRoundKey',ISR:'InvShiftRows',ISB:'InvSubBytes',IMC:'InvMixColumns',DONE:'✓ Ашық мәтін!',final:'Финал'}
+  }[currentLang]||{};
+  if(step.op==='ARK'&&step.rkIdx!==undefined&&step.rkIdx!==null)return step.rkIdx===14?p.ARK:`${p.ARK} (RK${step.rkIdx})`;
+  if((step.op==='ISR'||step.op==='ISB')&&step.round===0)return `${p[step.op]} (${p.final})`;
+  return p[step.op]||step.name;
+}
+// ════ RENDER STEP ════
+function renderStep(idx,instant){
+  const step=decSteps[idx];const total=decSteps.length;
+  isbSkipRequested=false;isbAnimationFinish=null;setSboxSkipVisible(false);
+  isAnimating=!instant;
+  const pct=Math.round(idx/(total-1)*100)||0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('navCtr').textContent=`${idx+1} / ${total}`;
+  document.getElementById('stepOpName').textContent=localizedStepName(step);
+  const BADGE={ARK:'badge-ark',ISR:'badge-isr',ISB:'badge-isb',IMC:'badge-imc',INIT:'badge-idle',DONE:'badge-done'};
+  const badge=document.getElementById('stepRoundBadge');
+  badge.className='step-badge '+(BADGE[step.op]||'badge-idle');
+  if(step.round!==null&&step.round!==undefined){
+    const bp={ru:{start:'Начало',round:'Раунд'},en:{start:'Start',round:'Round'},kz:{start:'Басы',round:'Раунд'}}[currentLang]||{};
+    badge.textContent=step.op==='ARK'&&step.dn===0?`RK${step.rkIdx} · ${bp.start}`:`${bp.round} ${step.dn} / RK${step.rkIdx!==undefined&&step.rkIdx!==null?step.rkIdx:'-'}`;
+  } else {
+    const bp={ru:{loading:'Загрузка',final:'Финал'},en:{loading:'Loading',final:'Final'},kz:{loading:'Жүктеу',final:'Финал'}}[currentLang]||{};
+    badge.textContent=step.op==='INIT'?bp.loading:bp.final;
+  }
+  document.getElementById('navPrev').disabled=(idx===0);
+  document.getElementById('navNext').disabled=(idx===total-1);
+  setTheory(THEORY[step.op]||THEORY.INIT);
+  showStepExplain(step.op);
+  updateDiagramActive(step);
+
+  // Hide all extra visuals
+  document.getElementById('sboxSection').classList.toggle('show',step.op==='ISB');
+  document.getElementById('shiftVisual').classList.remove('show');
+  document.getElementById('stepArrowsVisual').classList.remove('show');
+  document.getElementById('colAnimWrap').classList.remove('show');
+  document.getElementById('cellExplainPanel')?.classList.remove('show');
+  document.getElementById('asciiPanel')?.classList.remove('show');
+
+  const prevState=decSteps[idx-1]?.state||step.state;
+
+  // Show visual overlays instantly
+  if(step.op==='ISR'){buildShiftVisual(prevState,step.state);}
+  if(step.op==='ISB'){buildSubBytesArrows(prevState,step.state);}
+  if(step.op==='IMC'){buildColAnim(prevState,step.state);}
+
+  // Round key
+  if(step.rk){
+    show2('prevWrap');show2('rkWrap');show2('opSymWrap');
+    document.getElementById('prevLbl').textContent=(LANG_PACK[currentLang]||LANG_PACK.ru).ui.beforeXor;
+    document.getElementById('rkLbl').textContent=`${(LANG_PACK[currentLang]||LANG_PACK.ru).ui.roundKey} (RK${step.rkIdx})`;
+    document.getElementById('opSym').textContent='⊕';document.getElementById('opSymLbl').textContent='XOR';
+    renderPrevMatrix(prevState);renderRKMatrix(step.rk);buildXorEq(step);
+  } else {
+    hide2('prevWrap');
+    hide2('rkWrap');
+    if(step.op==='ISR'){show2('opSymWrap');document.getElementById('opSym').textContent='↔';document.getElementById('opSymLbl').textContent=(LANG_PACK[currentLang]||LANG_PACK.ru).ui.shift;}
+    else if(step.op==='ISB'){hide2('opSymWrap');}
+    else if(step.op==='IMC'){show2('opSymWrap');document.getElementById('opSym').textContent='⊗';document.getElementById('opSymLbl').textContent='GF(2⁸)';}
+    else hide2('opSymWrap');
+    buildXorEqGeneric(step);
+  }
+
+  const hk=step.op==='ARK'&&step.dn===0?'ARK_INIT':step.op;
+  showMascotText(mascotHint(hk));
+  updateFlowchart(idx);
+
+  if(instant){
+    renderMatrixInstant(step.state);
+    if(step.op==='ISB'){const b=prevState[0][0];highlightSbox(b);}
+    isAnimating=false;
+  } else {
+    animateMatrix(step,prevState,()=>{isAnimating=false;});
+  }
+
+  if(step.op==='DONE'){
+    const bytes=state2b(step.state);
+    const ascii=bytes.map(b=>(b>=32&&b<127)?String.fromCharCode(b):'·').join('');
+    document.getElementById('decResultBox').classList.remove('hidden');
+    document.getElementById('decResultHex').textContent=b2hex(bytes);
+    document.getElementById('decResultAscii').textContent=`"${ascii}"`;
+    buildAsciiTable(step.state);
+    setStatus('done',(LANG_PACK[currentLang]||LANG_PACK.ru).statusDone);
+  }
+}
+
+function printableAscii(b){
+  if(b===0)return 'NUL';
+  if(b===9)return 'TAB';
+  if(b===10)return 'LF';
+  if(b===13)return 'CR';
+  if(b===32)return 'SPACE';
+  return (b>=33&&b<=126)?String.fromCharCode(b):'·';
+}
+function buildAsciiTable(state){
+  const wrap=document.getElementById('asciiTableWrap');
+  const panel=document.getElementById('asciiPanel');
+  if(!wrap||!panel)return;
+  const t={
+    ru:{title:'Финальный разбор plaintext через ASCII',note:'AES читает финальную матрицу по столбцам: plaintext[c*4+r] = State[r][c]. Затем каждый байт переводится из HEX в DEC и ASCII.',source:'Источник'},
+    en:{title:'Final plaintext breakdown through ASCII',note:'AES reads the final matrix column by column: plaintext[c*4+r] = State[r][c]. Then each byte is converted from HEX to DEC and ASCII.',source:'Source'},
+    kz:{title:'Plaintext мәнін ASCII арқылы финалдық талдау',note:'AES финалдық матрицаны баған бойынша оқиды: plaintext[c*4+r] = State[r][c]. Содан кейін әр байт HEX-тен DEC және ASCII-ге аударылады.',source:'Дереккөз'}
+  }[currentLang]||{};
+  textSel('.ascii-title',t.title);textSel('.ascii-note',t.note);
+  const rows=[];
+  for(let c=0;c<4;c++)for(let r=0;r<4;r++){
+    const idx=c*4+r,b=state[r][c];
+    rows.push(`<tr><td>${idx}</td><td>State[${r}][${c}]</td><td>${h(b)}</td><td>${b}</td><td>${printableAscii(b)}</td></tr>`);
+  }
+  wrap.innerHTML=`<table class="ascii-table"><thead><tr><th>#</th><th>${t.source}</th><th>HEX</th><th>DEC</th><th>ASCII</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
+  panel.classList.add('show');
+}
+// ════ MATRIX RENDERING ════
+function initStateMatrix(){const el=document.getElementById('stateMat');el.innerHTML='';for(let r=0;r<4;r++)for(let c=0;c<4;c++){const d=document.createElement('button');d.type='button';d.className='mc';d.id=`mc${r}${c}`;d.textContent='??';d.title='Нажмите, чтобы увидеть происхождение значения';d.onclick=()=>explainMatrixCell(r,c);el.appendChild(d);}}
+function initPrevMatrix(){const el=document.getElementById('prevMat');if(!el)return;el.innerHTML='';for(let r=0;r<4;r++)for(let c=0;c<4;c++){const d=document.createElement('div');d.className='prevc';d.id=`prevc${r}${c}`;d.textContent='??';el.appendChild(d);}}
+function initRKMatrix(){const el=document.getElementById('rkMat');el.innerHTML='';for(let r=0;r<4;r++)for(let c=0;c<4;c++){const d=document.createElement('button');d.type='button';d.className='rkc';d.id=`rkc${r}${c}`;d.textContent='??';d.title='Нажмите, чтобы увидеть XOR с этим байтом ключа';d.onclick=()=>explainRoundKeyCell(r,c);el.appendChild(d);}}
+function renderMatrixInstant(state){clearMcClasses();for(let r=0;r<4;r++)for(let c=0;c<4;c++){const el=document.getElementById(`mc${r}${c}`);if(el)el.textContent=h(state[r][c]);}}
+function clearMcClasses(){document.querySelectorAll('.mc').forEach(el=>el.className='mc');}
+function renderPrevMatrix(state){for(let r=0;r<4;r++)for(let c=0;c<4;c++){const el=document.getElementById(`prevc${r}${c}`);if(el){el.textContent=h(state[r][c]);el.className='prevc';}}}
+function renderRKMatrix(rk){for(let r=0;r<4;r++)for(let c=0;c<4;c++){const el=document.getElementById(`rkc${r}${c}`);if(el){el.textContent=h(rk[c*4+r]);el.className='rkc';}}}
+
+function chip(txt,cls=''){return `<span class="cell-chip ${cls}">${txt}</span>`;}
+function chain(parts){return `<div class="cell-explain-chain">${parts.join('<span class="cell-arrow">→</span>')}</div>`;}
+function markMatrixFocus(op,r,c){
+  document.querySelectorAll('.mc,.rkc,.prevc').forEach(el=>el.classList.remove('selected-cell','selected-key','row-selected','col-selected'));
+  if(op==='ISB')return;
+  if(op==='ISR'){
+    for(let i=0;i<4;i++){
+      document.getElementById(`mc${r}${i}`)?.classList.add('row-selected');
+      document.getElementById(`prevc${r}${i}`)?.classList.add('row-selected');
+    }
+    return;
+  }
+  if(op==='IMC'){
+    for(let i=0;i<4;i++){
+      document.getElementById(`mc${i}${c}`)?.classList.add('col-selected');
+      document.getElementById(`prevc${i}${c}`)?.classList.add('col-selected');
+    }
+    return;
+  }
+  for(let i=0;i<4;i++){
+    document.getElementById(`mc${r}${i}`)?.classList.add('row-selected');
+    document.getElementById(`rkc${r}${i}`)?.classList.add('row-selected');
+    document.getElementById(`prevc${r}${i}`)?.classList.add('row-selected');
+    document.getElementById(`mc${i}${c}`)?.classList.add('col-selected');
+    document.getElementById(`rkc${i}${c}`)?.classList.add('col-selected');
+    document.getElementById(`prevc${i}${c}`)?.classList.add('col-selected');
+  }
+}
+function getCellTextPack(){
+  const packs={
+    ru:{
+      title:(r,c,now)=>`Ячейка State[${r}][${c}] = ${now}`,
+      isb:(beforeHex,rowHex,colHex,out)=>`InvSubBytes заменяет каждый байт через таблицу INV S-BOX. Для этой ячейки берем старое значение ${beforeHex}: первая hex-цифра ${rowHex} указывает строку, вторая hex-цифра ${colHex} указывает столбец. На пересечении получаем ${out}.`,
+      oldByte:v=>`старый байт ${v}`,row:v=>`строка ${v}`,col:v=>`столбец ${v}`,newValue:v=>`новое значение ${v}`,
+      ark:'AddRoundKey считает XOR между байтом State и байтом ключа раунда в той же позиции.',
+      isr:(r,c,sourceCol)=>`InvShiftRows двигает строку ${r} вправо на ${r} позиции. Поэтому значение в State[${r}][${c}] пришло из старой ячейки State[${r}][${sourceCol}].`,
+      oldCell:(r,c,v)=>`старое [${r}][${c}] ${v}`,shift:r=>`сдвиг вправо ${r}`,newCell:(r,c,v)=>`новое [${r}][${c}] ${v}`,
+      imc:c=>`InvMixColumns пересчитывает весь столбец ${c} в поле GF(2^8). Это значение получилось из четырех старых байтов этого столбца и обратной матрицы [0E,0B,0D,09].`,
+      column:(c,vals)=>`столбец ${c}: ${vals}`,gf:'умножение GF(2^8)',
+      init:idx=>`На старте байты шифртекста записываются в матрицу по столбцам. Эта ячейка взята из позиции ${idx} входного массива.`,
+      done:idx=>`В финале матрица читается обратно по столбцам: эта ячейка станет байтом plaintext[${idx}].`,
+      generic:now=>`Текущее значение ячейки: ${now}. Выберите шаг SubBytes, AddRoundKey, InvShiftRows или InvMixColumns, чтобы увидеть подробную формулу происхождения.`,
+      keyTitle:(rk,r,c,key)=>`Round key RK${rk}: key[${r}][${c}] = ${key}`,
+      keyBody:'Ключ раунда интерактивный: эта ячейка ключа XOR-ится с ячейкой State в той же строке и столбце. Вертикальная и горизонтальная линии показывают общую позицию.',
+      beforeXor:v=>`до XOR ${v}`,key:v=>`ключ ${v}`,result:v=>`результат ${v}`
+    },
+    en:{
+      title:(r,c,now)=>`State[${r}][${c}] cell = ${now}`,
+      isb:(beforeHex,rowHex,colHex,out)=>`InvSubBytes replaces each byte through the INV S-BOX table. For this cell, the old value is ${beforeHex}: the first hex digit ${rowHex} selects the row, the second hex digit ${colHex} selects the column, and the intersection gives ${out}.`,
+      oldByte:v=>`old byte ${v}`,row:v=>`row ${v}`,col:v=>`column ${v}`,newValue:v=>`new value ${v}`,
+      ark:'AddRoundKey computes XOR between the State byte and the round-key byte in the same position.',
+      isr:(r,c,sourceCol)=>`InvShiftRows shifts row ${r} right by ${r} position(s). So State[${r}][${c}] came from the old State[${r}][${sourceCol}] cell.`,
+      oldCell:(r,c,v)=>`old [${r}][${c}] ${v}`,shift:r=>`shift right ${r}`,newCell:(r,c,v)=>`new [${r}][${c}] ${v}`,
+      imc:c=>`InvMixColumns recalculates the whole column ${c} in the GF(2^8) field. This value came from the four old bytes of that column and the inverse matrix [0E,0B,0D,09].`,
+      column:(c,vals)=>`column ${c}: ${vals}`,gf:'GF(2^8) multiply',
+      init:idx=>`At the start, ciphertext bytes are written into the matrix column by column. This cell comes from input position ${idx}.`,
+      done:idx=>`At the end, the matrix is read column by column: this cell becomes plaintext[${idx}].`,
+      generic:now=>`Current cell value: ${now}. Select SubBytes, AddRoundKey, InvShiftRows, or InvMixColumns to see the detailed origin formula.`,
+      keyTitle:(rk,r,c,key)=>`Round key RK${rk}: key[${r}][${c}] = ${key}`,
+      keyBody:'The round key is interactive: this key cell is XORed with the State cell in the same row and column. The vertical and horizontal highlights show the shared position.',
+      beforeXor:v=>`before XOR ${v}`,key:v=>`key ${v}`,result:v=>`result ${v}`
+    },
+    kz:{
+      title:(r,c,now)=>`State[${r}][${c}] ұяшығы = ${now}`,
+      isb:(beforeHex,rowHex,colHex,out)=>`InvSubBytes әр байтты INV S-BOX кестесі арқылы ауыстырады. Бұл ұяшықта ескі мән ${beforeHex}: бірінші hex цифр ${rowHex} жолды, екінші hex цифр ${colHex} бағанды таңдайды, қиылыста ${out} алынады.`,
+      oldByte:v=>`ескі байт ${v}`,row:v=>`жол ${v}`,col:v=>`баған ${v}`,newValue:v=>`жаңа мән ${v}`,
+      ark:'AddRoundKey State байты мен сол позициядағы раунд кілтінің байты арасында XOR есептейді.',
+      isr:(r,c,sourceCol)=>`InvShiftRows ${r}-жолды оңға ${r} орынға жылжытады. Сондықтан State[${r}][${c}] мәні ескі State[${r}][${sourceCol}] ұяшығынан келді.`,
+      oldCell:(r,c,v)=>`ескі [${r}][${c}] ${v}`,shift:r=>`оңға жылжу ${r}`,newCell:(r,c,v)=>`жаңа [${r}][${c}] ${v}`,
+      imc:c=>`InvMixColumns ${c}-бағанды GF(2^8) өрісінде қайта есептейді. Бұл мән сол бағанның төрт ескі байтынан және кері матрицадан [0E,0B,0D,09] шықты.`,
+      column:(c,vals)=>`баған ${c}: ${vals}`,gf:'GF(2^8) көбейту',
+      init:idx=>`Басында шифрмәтін байттары матрицаға баған бойынша жазылады. Бұл ұяшық кіріс массивінің ${idx} позициясынан алынды.`,
+      done:idx=>`Соңында матрица баған бойынша оқылады: бұл ұяшық plaintext[${idx}] байты болады.`,
+      generic:now=>`Ұяшықтың ағымдағы мәні: ${now}. Толық формуланы көру үшін SubBytes, AddRoundKey, InvShiftRows немесе InvMixColumns қадамын таңдаңыз.`,
+      keyTitle:(rk,r,c,key)=>`Раунд кілті RK${rk}: key[${r}][${c}] = ${key}`,
+      keyBody:'Раунд кілті интерактивті: бұл кілт ұяшығы дәл сол жол мен бағандағы State ұяшығымен XOR жасайды. Тік және көлденең белгілеулер ортақ позицияны көрсетеді.',
+      beforeXor:v=>`XOR дейін ${v}`,key:v=>`кілт ${v}`,result:v=>`нәтиже ${v}`
+    }
+  };
+  return packs[currentLang]||packs.ru;
+}
+function explainMatrixCell(r,c){
+  const step=decSteps[stepIdx];if(!step)return;
+  const prev=decSteps[stepIdx-1]?.state||step.state;
+  const panel=document.getElementById('cellExplainPanel');
+  const title=document.getElementById('cellExplainTitle');
+  const body=document.getElementById('cellExplainBody');
+  const txt=getCellTextPack();
+  markMatrixFocus(step.op,r,c);
+  document.getElementById(`mc${r}${c}`)?.classList.add('selected-cell');
+  const now=h(step.state[r][c]);
+  title.textContent=txt.title(r,c,now);
+  let html='';
+  if(step.op==='ISB'){
+    const before=prev[r][c], beforeHex=h(before), rowHex=beforeHex[0], colHex=beforeHex[1], out=h(INV_SBOX[before]);
+    highlightSbox(before);
+    html=txt.isb(beforeHex,rowHex,colHex,out)+
+      chain([chip(txt.oldByte(beforeHex),'blue'),chip(txt.row(rowHex),'gold'),chip(txt.col(colHex),'gold'),chip(txt.newValue(out),'green')]);
+  }else if(step.op==='ARK'&&step.rk){
+    const before=prev[r][c], key=step.rk[c*4+r], out=step.state[r][c];
+    html=txt.ark+
+      chain([chip(h(before),'blue'),chip(`XOR ${h(key)}`,'gold'),chip(h(out),'green')]);
+  }else if(step.op==='ISR'){
+    const sourceCol=(c-r+4)%4;
+    html=txt.isr(r,c,sourceCol)+
+      chain([chip(txt.oldCell(r,sourceCol,h(prev[r][sourceCol])),'blue'),chip(txt.shift(r),'gold'),chip(txt.newCell(r,c,now),'green')]);
+  }else if(step.op==='IMC'){
+    const colVals=[0,1,2,3].map(row=>h(prev[row][c])).join(' ');
+    html=txt.imc(c)+
+      chain([chip(txt.column(c,colVals),'blue'),chip(txt.gf,'gold'),chip(now,'green')]);
+  }else if(step.op==='INIT'){
+    html=txt.init(c*4+r)+
+      chain([chip(`cipher[${c*4+r}]`,'blue'),chip(now,'green')]);
+  }else if(step.op==='DONE'){
+    html=txt.done(c*4+r)+
+      chain([chip(`State[${r}][${c}] ${now}`,'blue'),chip(`plaintext[${c*4+r}]`,'green')]);
+  }else{
+    html=txt.generic(now);
+  }
+  body.innerHTML=html;
+  panel.classList.add('show');
+  playSoundCell();
+}
+function explainRoundKeyCell(r,c){
+  const step=decSteps[stepIdx];if(!step||!step.rk)return;
+  const prev=decSteps[stepIdx-1]?.state||step.state;
+  const key=step.rk[c*4+r], before=prev[r][c], out=step.state[r][c];
+  const panel=document.getElementById('cellExplainPanel');
+  const title=document.getElementById('cellExplainTitle');
+  const body=document.getElementById('cellExplainBody');
+  const txt=getCellTextPack();
+  markMatrixFocus(step.op,r,c);
+  document.getElementById(`rkc${r}${c}`)?.classList.add('selected-key');
+  document.getElementById(`mc${r}${c}`)?.classList.add('selected-cell');
+  title.textContent=txt.keyTitle(step.rkIdx,r,c,h(key));
+  body.innerHTML=txt.keyBody+
+    `<div class="xor-focus-line"></div>`+
+    chain([chip(txt.beforeXor(h(before)),'blue'),chip(txt.key(h(key)),'gold'),chip(txt.result(h(out)),'green')]);
+  panel.classList.add('show');
+  playSoundCell();
+}
+// ════ ANIMATIONS ════
+function sleep(ms){return new Promise(r=>setTimeout(r,ms*animSpeed*animSpeedMult));}
+
+function animateMatrix(step,prevState,done){
+  renderMatrixInstant(prevState);
+  switch(step.op){
+    case 'ARK':animARK(step,done);break;
+    case 'ISR':animISR(step,done);break;
+    case 'ISB':animISB(step,done);break;
+    case 'IMC':animIMC(step,done);break;
+    case 'INIT':animInit(step,done);break;
+    case 'DONE':animDone(step,done);break;
+    default:renderMatrixInstant(step.state);done();break;
+  }
+}
+
+async function animARK(step,done){
+  playSoundARK();
+  const st=step.state,rk=step.rk;
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const delay=(r*4+c)*28;
+    setTimeout(()=>{
+      document.getElementById(`prevc${r}${c}`)?.classList.add('hi');
+      document.getElementById(`mc${r}${c}`)?.classList.add('hi-rk');
+      document.getElementById(`rkc${r}${c}`)?.classList.add('hi');
+    },delay);
+  }
+  await sleep(520);
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const mc=document.getElementById(`mc${r}${c}`);
+    if(mc){mc.classList.add('changed');mc.textContent=h(st[r][c]);}
+  }
+  await sleep(460);
+  clearMcClasses();document.querySelectorAll('.rkc').forEach(e=>e.className='rkc');document.querySelectorAll('.prevc').forEach(e=>e.className='prevc');
+  done();
+}
+
+async function animISR(step,done){
+  playSoundISR();
+  const st=step.state;const prevState=decSteps[stepIdx-1]?.state||st;
+  const rowCls=['hi-row0','hi-row1','hi-row2','hi-row3'];
+  buildShiftVisual(prevState,st);
+  for(let row=0;row<4;row++){
+    for(let c=0;c<4;c++)document.getElementById(`mc${row}${c}`)?.classList.add(rowCls[row]);
+    await sleep(110);
+    if(row>0){
+      for(let c=0;c<4;c++){const mc=document.getElementById(`mc${row}${c}`);mc?.classList.add('slide-right');}
+      await sleep(250);
+      for(let c=0;c<4;c++){const mc=document.getElementById(`mc${row}${c}`);if(mc){mc.classList.add('changed');mc.textContent=h(st[row][c]);}}
+      await sleep(120);
+    }
+  }
+  await sleep(200);clearMcClasses();done();
+}
+
+async function animISB(step,done){
+  playSoundISB();
+  const st=step.state;const prevState=decSteps[stepIdx-1]?.state||st;
+  let finished=false;
+  const finish=(skipped=false)=>{
+    if(finished)return;
+    finished=true;
+    isbAnimationFinish=null;
+    setSboxSkipVisible(false);
+    renderMatrixInstant(st);
+    clearMcClasses();
+    highlightSbox(prevState[0][0]);
+    done();
+  };
+  isbAnimationFinish=finish;
+  setSboxSkipVisible(true);
+  buildSubBytesArrows(prevState,st);
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    if(finished||isbSkipRequested)return finish(true);
+    await sleep(180);
+    if(finished||isbSkipRequested)return finish(true);
+    const mc=document.getElementById(`mc${r}${c}`);
+    const byteVal=prevState[r][c];highlightSbox(byteVal);
+    if(mc){mc.classList.add('hi-sub');playSoundCell();await sleep(220);if(finished||isbSkipRequested)return finish(true);mc.classList.add('changed');mc.textContent=h(st[r][c]);}
+  }
+  await sleep(520);if(finished)return;finish(false);
+}
+
+async function animIMC(step,done){
+  playSoundIMC();
+  const st=step.state;const prevState=decSteps[stepIdx-1]?.state||st;
+  buildColAnim(prevState,st);
+  const colCls=['hi-col0','hi-col1','hi-col2','hi-col3'];
+  for(let col=0;col<4;col++){
+    buildColAnim(prevState,st,col);
+    for(let row=0;row<4;row++)document.getElementById(`mc${row}${col}`)?.classList.add(colCls[col]);
+    await sleep(220);
+    for(let row=0;row<4;row++){const mc=document.getElementById(`mc${row}${col}`);if(mc){mc.classList.add('changed');mc.textContent=h(st[row][col]);}}
+    await sleep(190);
+    for(let row=0;row<4;row++)document.getElementById(`mc${row}${col}`)?.classList.remove(colCls[col],'changed');
+  }
+  done();
+}
+
+async function animInit(step,done){
+  const st=step.state;
+  for(let c=0;c<4;c++){for(let r=0;r<4;r++){await sleep(42);const mc=document.getElementById(`mc${r}${c}`);if(mc){mc.classList.add('changed');mc.textContent=h(st[r][c]);}}}
+  await sleep(200);clearMcClasses();done();
+}
+
+async function animDone(step,done){
+  playSoundDone();const st=step.state;clearMcClasses();
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    setTimeout(()=>{const mc=document.getElementById(`mc${r}${c}`);if(mc){mc.classList.add('done','changed');mc.textContent=h(st[r][c]);}},( r*4+c)*38);
+  }
+  await sleep(680);done();
+}
+
+// ════ XOR EQ BAR ════
+function buildXorEq(step){
+  const s=step.state,rk=step.rk;const prevState=decSteps[stepIdx-1]?.state;
+  if(!prevState){buildXorEqGeneric(step);return;}
+  const r=0,c=0;const before=prevState[r][c],key=rk[c*4+r],after=s[r][c];
+  const label=({ru:'Пример S[0][0]:',en:'Example S[0][0]:',kz:'Мысал S[0][0]:'}[currentLang]||'Example S[0][0]:');
+  document.getElementById('xorEq').innerHTML=`
+    <span style="color:var(--tx3);font-size:.55rem;font-weight:700">${label}</span>
+    <span class="eq-v">${h(before)}</span>
+    <span class="eq-op">⊕</span>
+    <span class="eq-v k">${h(key)}</span>
+    <span class="eq-op">=</span>
+    <span class="eq-v r">${h(after)}</span>
+    <span class="eq-info">${h(before)} XOR ${h(key)} = ${h(after)}</span>
+  `;
+}
+function buildXorEqGeneric(step){
+  const DESCS={
+    ru:{ISR:'Ряды сдвигаются ВПРАВО: row0→+0, row1→+1, row2→+2, row3→+3',ISB:'Каждый байт: INV_SBOX[byte] → новое значение (обратная S-box таблица)',IMC:'Каждый столбец: [0E,0B,0D,09;...] × col в поле GF(2⁸)',INIT:'state[r][c] = cipher[c·4 + r] — загрузка шифртекста по столбцам',DONE:'plaintext[c·4 + r] = state[r][c] — чтение по столбцам → текст!'},
+    en:{ISR:'Rows shift RIGHT: row0→+0, row1→+1, row2→+2, row3→+3',ISB:'Each byte: INV_SBOX[byte] → new value (inverse S-box table)',IMC:'Each column: [0E,0B,0D,09;...] × col in GF(2⁸)',INIT:'state[r][c] = cipher[c·4 + r] — load ciphertext column by column',DONE:'plaintext[c·4 + r] = state[r][c] — read column by column → text!'},
+    kz:{ISR:'Жолдар ОҢҒА жылжиды: row0→+0, row1→+1, row2→+2, row3→+3',ISB:'Әр байт: INV_SBOX[byte] → жаңа мән (кері S-box кестесі)',IMC:'Әр баған: [0E,0B,0D,09;...] × col GF(2⁸) өрісінде',INIT:'state[r][c] = cipher[c·4 + r] — шифрмәтінді баған бойынша жүктеу',DONE:'plaintext[c·4 + r] = state[r][c] — баған бойынша оқу → мәтін!'}
+  };
+  const pack=DESCS[currentLang]||DESCS.ru;
+  document.getElementById('xorEq').innerHTML=`<span class="eq-info">${pack[step.op]||step.name}</span>`;
+}
+// ════ FLOWCHART ════
+function buildFlowchart(){
+  const f={
+    ru:{cipher:'📥 Шифртекст',start:'Начало',initial:'RK14 · Начальный',round:'🔄 Раунд',shift:'Сдвиг →',sbox:'S-box замена',mix:'GF(2⁸) умножение',final:'🏁 Финальный Раунд (RK0)',last:'RK0 · последний',plain:'🎉 Открытый текст',done:'Дешифрование завершено'},
+    en:{cipher:'📥 Ciphertext',start:'Start',initial:'RK14 · Initial',round:'🔄 Round',shift:'Shift →',sbox:'S-box lookup',mix:'GF(2⁸) multiply',final:'🏁 Final Round (RK0)',last:'RK0 · last',plain:'🎉 Plaintext',done:'Decryption complete'},
+    kz:{cipher:'📥 Шифрмәтін',start:'Басы',initial:'RK14 · Бастапқы',round:'🔄 Раунд',shift:'Жылжыту →',sbox:'S-box ауыстыру',mix:'GF(2⁸) көбейту',final:'🏁 Финалдық раунд (RK0)',last:'RK0 · соңғы',plain:'🎉 Ашық мәтін',done:'Дешифрлеу аяқталды'}
+  }[currentLang]||{};
+  fcItems=[];
+  fcItems.push({stepIdx:0,label:f.cipher,sub:f.start,type:'step'});
+  fcItems.push({stepIdx:1,label:'⊕ AddRoundKey',sub:f.initial,type:'step'});
+  for(let dn=1;dn<=13;dn++){
+    const rnd=14-dn;
+    fcItems.push({type:'header',label:`${f.round} ${dn}  (RK${rnd})`});
+    const base=2+(dn-1)*4;
+    fcItems.push({stepIdx:base,label:'↔️ InvShiftRows',sub:f.shift,type:'step'});
+    fcItems.push({stepIdx:base+1,label:'🔴 InvSubBytes',sub:f.sbox,type:'step'});
+    fcItems.push({stepIdx:base+2,label:`⊕ AddRoundKey`,sub:`RK${rnd} XOR`,type:'step'});
+    fcItems.push({stepIdx:base+3,label:'🔢 InvMixColumns',sub:f.mix,type:'step'});
+  }
+  fcItems.push({type:'header',label:f.final});
+  fcItems.push({stepIdx:54,label:'↔️ InvShiftRows',sub:f.shift,type:'step'});
+  fcItems.push({stepIdx:55,label:'🔴 InvSubBytes',sub:f.sbox,type:'step'});
+  fcItems.push({stepIdx:56,label:'⊕ AddRoundKey',sub:f.last,type:'step'});
+  fcItems.push({stepIdx:57,label:f.plain,sub:f.done,type:'step'});
+  const wrap=document.getElementById('fcWrap');wrap.innerHTML='';
+  fcItems.forEach(item=>{
+    if(item.type==='header'){
+      const d=document.createElement('div');d.className='fc-round-hdr';d.textContent=item.label;wrap.appendChild(d);
+    } else {
+      const d=document.createElement('div');d.className='fc-item';d.id=`fc_${item.stepIdx}`;
+      d.onclick=()=>jumpToStep(item.stepIdx);
+      d.innerHTML=`<div class="fc-dot"></div><div style="flex:1"><div class="fc-name">${item.label}</div><div class="fc-sub">${item.sub||''}</div></div>`;
+      wrap.appendChild(d);
+    }
+  });
+}
+function updateFlowchart(idx){
+  fcItems.forEach(item=>{
+    if(item.type!=='step')return;
+    const el=document.getElementById(`fc_${item.stepIdx}`);if(!el)return;
+    el.className='fc-item';
+    if(item.stepIdx<idx)el.classList.add('passed');
+    else if(item.stepIdx===idx)el.classList.add('active');
+  });
+  const active=document.querySelector('.fc-item.active');
+  if(active)active.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// ════ MASCOT ════
+function toggleMascot(){
+  hideMascot();
+}
+function hideMascot(){
+  const wrap=document.querySelector('.mascot-container');
+  const summon=document.getElementById('berkutSummon');
+  if(wrap)wrap.style.display='none';
+  if(summon)summon.classList.add('show');
+  mascotDismissed=true;
+  mascotCollapsed=true;
+}
+function summonMascot(){
+  const wrap=document.querySelector('.mascot-container');
+  const body=document.getElementById('mascotBody');
+  const summon=document.getElementById('berkutSummon');
+  if(wrap)wrap.style.display='flex';
+  if(summon)summon.classList.remove('show');
+  if(body){body.classList.remove('collapsed');body.classList.add('visible');}
+  mascotDismissed=false;
+  mascotCollapsed=false;
+  playSoundDone();
+}
+function showMascotText(txt){
+  document.getElementById('mascotTxt').textContent=txt;
+  if(mascotDismissed)return;
+  const body=document.getElementById('mascotBody');
+  const wrap=document.querySelector('.mascot-container');
+  const summon=document.getElementById('berkutSummon');
+  if(wrap)wrap.style.display='flex';
+  if(summon)summon.classList.remove('show');
+  if(mascotCollapsed){
+    body.classList.remove('collapsed');body.classList.add('visible');mascotCollapsed=false;
+    setTimeout(()=>{if(!mascotCollapsed){body.classList.add('collapsed');body.classList.remove('visible');mascotCollapsed=true;}},6500);
+  }
+}
+
+// ════ UI HELPERS ════
+const show=id=>{const e=document.getElementById(id);if(e){e.classList.remove('hidden');e.style.display='flex';}};
+const hide=id=>{const e=document.getElementById(id);if(e){e.classList.add('hidden');e.style.display='none';}};
+const show2=id=>{const e=document.getElementById(id);if(e)e.style.display='';};
+const hide2=id=>{const e=document.getElementById(id);if(e)e.style.display='none';};
+function setStatus(mode,txt){const el=document.getElementById('hStatus');el.className='h-status '+mode;el.textContent=txt;}
+function setTheory(t){
+  document.getElementById('theoryOp').textContent=t.op;
+  document.getElementById('theoryDesc').innerHTML=t.desc;
+  document.getElementById('theoryFormula').textContent=t.formula;
+  const cOp=document.getElementById('centerTheoryOp');
+  const cDesc=document.getElementById('centerTheoryDesc');
+  const cFormula=document.getElementById('centerTheoryFormula');
+  if(cOp)cOp.textContent=t.op;
+  if(cDesc)cDesc.innerHTML=t.desc;
+  if(cFormula)cFormula.textContent=t.formula;
+}
+function resetAll(){
+  appMode='idle';stepIdx=0;decSteps=[];isAnimating=false;
+  show('idleView');hide('encView');
+  const tv=document.getElementById('tutView');if(tv){tv.style.display='none';}
+  document.getElementById('encResultBox').classList.add('hidden');
+  document.getElementById('btnDec').classList.add('hidden');
+  document.getElementById('btnReset').classList.add('hidden');
+  document.getElementById('btnEnc').textContent=(LANG_PACK[currentLang]||LANG_PACK.ru).encBtn;
+  document.getElementById('decResultBox').classList.add('hidden');
+  document.getElementById('asciiPanel')?.classList.remove('show');
+  document.getElementById('fcWrap').innerHTML=`<div style="padding:2rem;text-align:center;opacity:.45;font-family:'Nunito',sans-serif;font-weight:700;font-size:.7rem;color:var(--tx3);line-height:2">${(LANG_PACK[currentLang]||LANG_PACK.ru).ui.flowEmpty}</div>`;
+  setStatus('idle',(LANG_PACK[currentLang]||LANG_PACK.ru).statusIdle);setTheory(THEORY.IDLE);showMascotText(mascotHint('IDLE'));
+}
+
+// ════ KEYBOARD ════
+document.addEventListener('keydown',e=>{
+  if(appMode!=='tutorial')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nextStep();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevStep();
+});
+
+// ════ INIT ════
+function initBerkutMascot(){
+  if(!document.getElementById('berkutSummon')){
+    const btn=document.createElement('button');
+    btn.className='berkut-summon';btn.id='berkutSummon';btn.textContent='Б';btn.title=({ru:'Вернуть помощника Беркута',en:'Bring Berkut back',kz:'Беркут көмекшісін қайтару'}[currentLang]||'Bring Berkut back');
+    btn.addEventListener('click',summonMascot);
+    document.body.appendChild(btn);
+  }
+  const txt=document.getElementById('mascotTxt');
+  if(txt)txt.textContent=mascotHint('IDLE');
+  const svg=document.getElementById('mascotSvg');
+  if(svg){
+    const img=document.createElement('img');
+    img.className='mascot-photo';
+    img.id='mascotPhoto';
+    img.src='berkut-mascot.png';
+    img.alt=({ru:'Беркут помощник',en:'Berkut helper',kz:'Беркут көмекші'}[currentLang]||'Berkut helper');
+    img.onclick=toggleMascot;
+    img.onerror=()=>{img.replaceWith(svg);};
+    svg.replaceWith(img);
+  }
+  return;
+  if(!svg)return;
+  svg.setAttribute('viewBox','0 0 96 132');
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="kitGreen" x1="0" x2="1"><stop offset="0" stop-color="#16a34a"/><stop offset="1" stop-color="#22c55e"/></linearGradient>
+      <linearGradient id="skinTone" x1="0" x2="1"><stop offset="0" stop-color="#ffd2a6"/><stop offset="1" stop-color="#f0a36c"/></linearGradient>
+    </defs>
+    <ellipse cx="48" cy="122" rx="34" ry="7" fill="rgba(15,23,42,.18)"/>
+    <path d="M31 54 L65 54 L73 87 L23 87 Z" fill="url(#kitGreen)" stroke="#ffffff" stroke-width="3"/>
+    <text x="48" y="77" text-anchor="middle" font-family="Fredoka One, Nunito" font-size="25" fill="#ffffff">7</text>
+    <path d="M31 58 C19 64 14 74 10 84" stroke="url(#skinTone)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M65 58 C78 62 84 72 88 82" stroke="url(#skinTone)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M35 86 L31 116" stroke="#0f172a" stroke-width="10" stroke-linecap="round"/>
+    <path d="M61 86 L66 116" stroke="#0f172a" stroke-width="10" stroke-linecap="round"/>
+    <path d="M24 121 L39 121" stroke="#f8fafc" stroke-width="7" stroke-linecap="round"/>
+    <path d="M60 121 L77 121" stroke="#f8fafc" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="48" cy="33" r="21" fill="url(#skinTone)" stroke="#ffffff" stroke-width="3"/>
+    <path d="M29 31 C33 12 61 10 68 29 C59 23 47 20 35 24 Z" fill="#20140d"/>
+    <path d="M35 39 Q48 49 61 39" stroke="#7c2d12" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="33" r="2.8" fill="#111827"/><circle cx="56" cy="33" r="2.8" fill="#111827"/>
+    <circle cx="30" cy="45" r="5" fill="rgba(255,77,109,.28)"/><circle cx="66" cy="45" r="5" fill="rgba(255,77,109,.28)"/>
+    <path d="M23 18 C32 4 58 2 72 15" stroke="#facc15" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="80" cy="104" r="9" fill="#fff" stroke="#111827" stroke-width="2"/>
+    <path d="M72 104 H88 M80 96 V112" stroke="#111827" stroke-width="1.5"/>
+  `;
+}
+initBerkutMascot();setFontSize(14);generateNewKey();onPtInput();setLang('ru');
+document.getElementById('idleView').style.display='flex';
+document.getElementById('tutView').style.display='none';
+
+setTimeout(()=>{
+  if(mascotDismissed)return;
+  const body=document.getElementById('mascotBody');
+  body.classList.remove('collapsed');body.classList.add('visible');mascotCollapsed=false;
+  setTimeout(()=>{if(!mascotDismissed){body.classList.add('collapsed');body.classList.remove('visible');mascotCollapsed=true;}},7500);
+},1500);
+</script>
+</body>
+</html>
